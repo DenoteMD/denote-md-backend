@@ -1,16 +1,67 @@
+import express from 'express';
+import cluster from 'cluster';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-export default class Main {
-  private name:string;
+/**
+ * Main Application
+ * @export
+ * @class AppMain
+ */
+class AppMain {
 
-  constructor(name:string) {
-    this.name = name;
+  /**
+   *Creates an instance of AppMain.
+   * @param {string} connectString
+   * @memberof AppMain
+   */
+  constructor() {
+    dotenv.config();
+    if (process.env.MONGO_CONNECT_STRING) {
+      mongoose.connect(process.env.MONGO_CONNECT_STRING, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+    } else {
+      process.exit(1);
+    }
   }
 
-  public getName():string {
-    return this.name;
+  /**
+   * Start Master
+   * @private
+   * @memberof AppMain
+   */
+  private startMaster() {
+    cluster.fork();
+    cluster.fork();
+  }
+
+  /**
+   * Start workers
+   * @private
+   * @param {string} host
+   * @param {number} port
+   * @memberof AppMain
+   */
+  private startSlave(host: string, port: number) {
+    const app = express();
+    app.use(express.json());
+    app.listen(port, host);
+  }
+
+  /**
+   * Public start method
+   * @memberof AppMain
+   */
+  public start() {
+    if (cluster.isMaster) {
+      this.startMaster();
+    } else {
+      this.startSlave('127.0.0.1', 8080);
+    }
   }
 }
 
-const instanceMain = new Main('DenoteMD');
-
-process.stdout.write(`Hello world, I'm ${instanceMain.getName()}\n`);
+const instanceMain = new AppMain();
+instanceMain.start();
