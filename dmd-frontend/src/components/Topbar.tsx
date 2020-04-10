@@ -24,27 +24,31 @@ const styles = (theme: Theme) =>
 
 interface comState {
   auth: boolean;
-  anchorEl: any;
+  //https://github.com/mui-org/material-ui/issues/8598
+  anchorEl?: HTMLButtonElement;
   open: boolean;
 }
 
 class Topbar extends Component<WithStyles<typeof styles>, comState> {
   state: comState = {
     auth: true,
-    anchorEl: null,
     open: false,
   };
 
   handleMenu = (e: MouseEvent<HTMLElement>) => {
-    this.setState({ anchorEl: e.target, open: !this.state.open });
+    this.setState({
+      anchorEl: e.currentTarget as HTMLButtonElement,
+      open: !this.state.open,
+    });
   };
 
   handleClose = () => {
-    this.setState({ anchorEl: null, open: false });
+    this.setState({ open: false });
   };
 
   render() {
     const { classes } = this.props;
+    const { auth, anchorEl, open } = this.state;
 
     return (
       <AppBar position="static">
@@ -60,7 +64,7 @@ class Topbar extends Component<WithStyles<typeof styles>, comState> {
           <Typography className={classes.title} variant="h6" noWrap>
             DenoteMD
           </Typography>
-          {this.state.auth && (
+          {auth && (
             <div>
               <IconButton
                 edge="end"
@@ -74,7 +78,7 @@ class Topbar extends Component<WithStyles<typeof styles>, comState> {
               </IconButton>
               <Menu
                 id="menu-appbar"
-                anchorEl={this.state.anchorEl}
+                anchorEl={anchorEl}
                 anchorOrigin={{
                   vertical: 'top',
                   horizontal: 'right',
@@ -84,7 +88,7 @@ class Topbar extends Component<WithStyles<typeof styles>, comState> {
                   vertical: 'top',
                   horizontal: 'right',
                 }}
-                open={this.state.open}
+                open={open}
                 onClose={this.handleClose}
               >
                 <MenuItem onClick={this.handleClose}>Profile</MenuItem>
