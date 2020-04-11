@@ -2,20 +2,15 @@ import express from 'express';
 import cluster from 'cluster';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import { MuxServer } from './framework/mux';
 
-/**
- * Main Application
- * @export
- * @class AppMain
- */
 class AppMain {
-
   /**
-   *Creates an instance of AppMain.
-   * @param {string} connectString
+   * Connect mongodb
+   * @static
    * @memberof AppMain
    */
-  constructor() {
+  public static connectMongo() {
     dotenv.config();
     if (process.env.MONGO_CONNECT_STRING) {
       mongoose.connect(process.env.MONGO_CONNECT_STRING, {
@@ -28,25 +23,32 @@ class AppMain {
   }
 
   /**
-   * Start Master
+   * Start master
    * @private
+   * @static
    * @memberof AppMain
    */
-  private startMaster() {
+  private static startMaster() {
     cluster.fork();
     cluster.fork();
   }
 
   /**
-   * Start workers
+   * Start wokers
    * @private
+   * @static
    * @param {string} host
    * @param {number} port
    * @memberof AppMain
    */
-  private startSlave(host: string, port: number) {
+  private static startWoker(host: string, port: number) {
+    AppMain.connectMongo();
     const app = express();
+    MuxServer.get('/', (_req: express.Request, res: express.Response) => {
+      res.json({ message: 'Ping Successfull' });
+    });
     app.use(express.json());
+    app.use(MuxServer);
     app.listen(port, host);
   }
 
@@ -54,14 +56,13 @@ class AppMain {
    * Public start method
    * @memberof AppMain
    */
-  public start() {
+  public static start() {
     if (cluster.isMaster) {
-      this.startMaster();
+      AppMain.startMaster();
     } else {
-      this.startSlave('127.0.0.1', 8080);
+      AppMain.startWoker('127.0.0.1', 8080);
     }
   }
 }
 
-const instanceMain = new AppMain();
-instanceMain.start();
+AppMain.start();
