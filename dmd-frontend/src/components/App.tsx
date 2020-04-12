@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import { Theme } from '@material-ui/core';
 import {
   MuiThemeProvider,
   createMuiTheme,
+  makeStyles,
   createStyles,
-  WithStyles,
-  withStyles,
 } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import blue from '@material-ui/core/colors/blue';
@@ -20,7 +19,7 @@ const theme = createMuiTheme({
   },
 });
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       display: 'flex',
@@ -35,26 +34,25 @@ const styles = (theme: Theme) =>
         display: 'none',
       },
     },
-  });
+  })
+);
 
-class App extends Component<WithStyles<typeof styles>> {
-  onEditorSave = (content: string) => {
+const App = () => {
+  const classes = useStyles();
+
+  const onEditorSave = (content: string) => {
     console.log(content);
   };
 
-  render() {
-    const { classes } = this.props;
+  return (
+    <MuiThemeProvider theme={theme}>
+      <Topbar />
+      <Container className={classes.container}>
+        <Editor className={classes.editor} onSaveFunc={onEditorSave}></Editor>
+        <div className={classes.sidebar}></div>
+      </Container>
+    </MuiThemeProvider>
+  );
+};
 
-    return (
-      <MuiThemeProvider theme={theme}>
-        <Topbar />
-        <Container className={classes.container}>
-          <Editor className={classes.editor}></Editor>
-          <div className={classes.sidebar}></div>
-        </Container>
-      </MuiThemeProvider>
-    );
-  }
-}
-
-export default withStyles(styles)(App);
+export default App;
