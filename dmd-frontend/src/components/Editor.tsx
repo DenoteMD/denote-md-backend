@@ -1,28 +1,26 @@
 import React from 'react';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import TextArea from '@material-ui/core/TextareaAutosize';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    wrapper: {
-      marginTop: '10px',
-    },
-    label: {},
-    textArea: {
-      marginTop: '10px',
-      marginBottom: '10px',
-      width: '100%',
-      fontSize: '14px',
-      padding: '10px',
-      fontFamily: 'Consolas,Courier,serif',
-      lineHeight: '21px;',
-      boxSizing: 'border-box',
-    },
-  })
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  wrapper: {
+    marginTop: '10px',
+  },
+  label: {},
+  textArea: {
+    marginTop: '10px',
+    marginBottom: '10px',
+    width: '100%',
+    fontSize: '14px',
+    padding: '10px',
+    fontFamily: 'Consolas,Courier,serif',
+    lineHeight: '21px;',
+    boxSizing: 'border-box',
+  },
+}));
 
 interface comProps {
   className: string;

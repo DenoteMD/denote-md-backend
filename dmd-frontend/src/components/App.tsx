@@ -5,7 +5,6 @@ import {
   MuiThemeProvider,
   createMuiTheme,
   makeStyles,
-  createStyles,
 } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import blue from '@material-ui/core/colors/blue';
@@ -19,23 +18,21 @@ const theme = createMuiTheme({
   },
 });
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    container: {
-      display: 'flex',
+const useStyles = makeStyles((theme: Theme) => ({
+  container: {
+    display: 'flex',
+  },
+  editor: {
+    flexGrow: 1,
+    paddingRight: '10px',
+  },
+  sidebar: {
+    width: '250px',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
     },
-    editor: {
-      flexGrow: 1,
-      paddingRight: '10px',
-    },
-    sidebar: {
-      width: '250px',
-      [theme.breakpoints.down('sm')]: {
-        display: 'none',
-      },
-    },
-  })
-);
+  },
+}));
 
 const App = () => {
   const classes = useStyles();
