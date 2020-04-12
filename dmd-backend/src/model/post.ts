@@ -42,7 +42,7 @@ export const SchemaPost = new Schema({
   favs: Number,
 });
 
-SchemaPost.pre<DocumentPost>('save', function (next) {
+SchemaPost.pre<DocumentPost>('save', function prevSavePost(next) {
   this.updated = new Date();
   next();
 });
