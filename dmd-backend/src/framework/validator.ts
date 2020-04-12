@@ -83,7 +83,7 @@ export class Validator {
             throw new Error(`Field ${name} in ${location}: ${(message) || 'does not satisfy validator'}`);
           }
           // Check value is in enums
-          if (enums && Array.isArray(enums) && enums.includes(value) < 0) {
+          if (enums && Array.isArray(enums) && enums.includes(value)) {
             throw new RangeError(`Field ${name} need to be in range ${enums}`);
           }
           // Assign value to validated result
