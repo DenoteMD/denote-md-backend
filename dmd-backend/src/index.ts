@@ -2,8 +2,14 @@ import express from 'express';
 import cluster from 'cluster';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import { MuxServer } from './framework/mux';
+import { Mux } from './framework/mux';
 
+const {
+  MONGO_CONNECT_STRING,
+  SERVICE_HOST,
+  SERVICE_PORT,
+  NODE_ENV,
+} = process.env;
 class AppMain {
   /**
    * Connect mongodb
@@ -12,8 +18,8 @@ class AppMain {
    */
   public static connectMongo() {
     dotenv.config();
-    if (process.env.MONGO_CONNECT_STRING) {
-      mongoose.connect(process.env.MONGO_CONNECT_STRING, {
+    if (MONGO_CONNECT_STRING) {
+      mongoose.connect(MONGO_CONNECT_STRING, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
@@ -44,11 +50,8 @@ class AppMain {
   private static startWoker(host: string, port: number) {
     AppMain.connectMongo();
     const app = express();
-    MuxServer.get('/', (_req: express.Request, res: express.Response) => {
-      res.json({ message: 'Ping Successfull' });
-    });
     app.use(express.json());
-    app.use(MuxServer);
+    Mux.init(NODE_ENV !== 'development');
     app.listen(port, host);
   }
 
@@ -59,8 +62,8 @@ class AppMain {
   public static start() {
     if (cluster.isMaster) {
       AppMain.startMaster();
-    } else {
-      AppMain.startWoker('127.0.0.1', 8080);
+    } else if (SERVICE_HOST && SERVICE_PORT) {
+      AppMain.startWoker(SERVICE_HOST, parseInt(SERVICE_PORT, 10));
     }
   }
 }
