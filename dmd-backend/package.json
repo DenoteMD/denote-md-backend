@@ -23,6 +23,7 @@
     "@types/mocha": "^5.2.7",
     "@types/mongoose": "^5.7.8",
     "@types/node": "^12.7.2",
+    "@types/winston-syslog": "^2.0.3",
     "@typescript-eslint/eslint-plugin": "^2.6.0",
     "@typescript-eslint/parser": "^2.6.0",
     "chai": "^4.2.0",
@@ -37,9 +38,15 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "chalk": "^4.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "logform": "^2.1.2",
+    "modern-syslog": "^1.2.0",
     "mongoose": "^5.9.7",
-    "uuid": "^7.0.3"
+    "uuid": "^7.0.3",
+    "winston": "^3.2.1",
+    "winston-syslog": "^2.4.4",
+    "winston-transport": "^4.3.0"
   }
 }
