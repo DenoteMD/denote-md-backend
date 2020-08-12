@@ -1,9 +1,10 @@
-import express from 'express';
 import cluster from 'cluster';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { Mux } from './framework/mux';
 import logger from './helper/logger';
+
+import './mux/document';
 
 dotenv.config();
 const {
@@ -53,9 +54,9 @@ class AppMain {
    */
   private static startWoker(host: string, port: number) {
     AppMain.connectMongo();
-    const app = express();
-    app.use(express.json());
-    Mux.init(NODE_ENV !== 'development');
+    // const app = express();
+    // app.use(express.json());
+    const app = Mux.init(NODE_ENV !== 'development');
     logger.info('Service process online pid:', process.pid, 'bind:', host, port);
     app.listen(port, host);
   }

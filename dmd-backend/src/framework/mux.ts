@@ -5,6 +5,7 @@ import {
   ResponseList,
   ResponseRecord,
 } from './response';
+import logger from '../helper/logger';
 
 export interface RequestData {
   body: any;
@@ -112,7 +113,7 @@ export class Mux {
     });
   }
 
-  public static init(production: boolean = true) {
+  public static init(production: boolean = true): any {
     Mux.production = production;
     for (let i = 0; i < Mux.muxMap.length; i += 1) {
       const {
@@ -121,8 +122,11 @@ export class Mux {
         validator,
         handler,
       } = Mux.muxMap[i];
+      logger.debug(url);
       Mux.addHandler(method, url, validator, handler);
     }
+    logger.info('Server successfully init\n');
+    return Mux.expressApp;
   }
 }
 
