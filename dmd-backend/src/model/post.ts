@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import xss from 'xss';
 
 /**
  * Document of a post
@@ -9,7 +10,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface DocumentPost extends Document {
     title: String,
     author: String,
-    body: String,
+    content: String,
     tags: String[],
     comments: {
         id: Number,
@@ -27,7 +28,7 @@ export interface DocumentPost extends Document {
 export const SchemaPost = new Schema({
   title: String,
   author: String,
-  body: String,
+  content: String,
   tags: [String],
   comments: [{
     id: Number,
@@ -44,6 +45,10 @@ export const SchemaPost = new Schema({
 
 SchemaPost.pre<DocumentPost>('save', function prevSavePost(next) {
   this.updated = new Date();
+  // encode body before adding it to collection
+  this.title = xss(this.title.toString());
+  this.content = xss(this.content.toString());
+  this.author = xss(this.author.toString());
   next();
 });
 
