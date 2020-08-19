@@ -68,7 +68,6 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
             <Typography className={classes.label} variant="h6" noWrap>
                 Static content
               </Typography>
-               
             </Grid>
           </Grid>       
         </div>
