@@ -4,6 +4,9 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import TextArea from '@material-ui/core/TextareaAutosize';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
+import { Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -19,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontFamily: 'Consolas,Courier,serif',
     lineHeight: '21px;',
     boxSizing: 'border-box',
-  },
+  }
 }));
 
 interface comProps {
@@ -46,18 +49,28 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
   return (
     <div className={`${classes.wrapper} ${className}`}>
       <form className="" onSubmit={onFormSubmit}>
-        <div>
-          <Typography className={classes.label} variant="h6" noWrap>
-            Paste your text here
-          </Typography>
-          <TextArea
-            value={text}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-              setText(e.currentTarget.value);
-            }}
-            className={classes.textArea}
-            rowsMin="15"
-          ></TextArea>
+        <div>       
+          <Grid container spacing={2}> 
+          <Grid item xs={6} >
+            <Typography className={classes.label} variant="h6" noWrap>
+              New paste
+            </Typography>
+            <TextField id="title" label="Paste Title"/>
+            <TextArea value={text}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                      setText(e.currentTarget.value);
+                    }}
+                    className={classes.textArea}
+                    rowsMin="15"
+            ></TextArea>
+            </Grid>
+            <Grid item xs={6}>  
+            <Typography className={classes.label} variant="h6" noWrap>
+                Static content
+              </Typography>
+               
+            </Grid>
+          </Grid>       
         </div>
         <Button variant="contained" type="submit" color="secondary">
           Save
