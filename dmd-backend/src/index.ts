@@ -55,7 +55,6 @@ class AppMain {
   private static startWoker(host: string, port: number) {
     AppMain.connectMongo();
     // const app = express();
-    // app.use(express.json());
     const app = Mux.init(NODE_ENV !== 'development');
     logger.info('Service process online pid:', process.pid, 'bind:', host, port);
     app.listen(port, host);

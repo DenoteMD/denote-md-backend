@@ -1,6 +1,6 @@
 {
   "name": "dmd-backend",
-  "version": "0.0.36",
+  "version": "0.0.85",
   "description": "DenoteMD backend",
   "author": "chiro@fkguru.com",
   "license": "MIT",

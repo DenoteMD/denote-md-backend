@@ -78,17 +78,17 @@ export class Mux {
     Mux.expressApp[methodName](url, async (req: express.Request, res :express.Response) => {
       let responseResult = null;
       try {
-        let veriedRequestData;
+        let verifiedRequestData;
         if (validator instanceof Validator) {
-          veriedRequestData = validator.validate(req);
+          verifiedRequestData = validator.validate(req);
         } else {
-          veriedRequestData = {
+          verifiedRequestData = {
             body: {},
             params: {},
             query: {},
           };
         }
-        const result = await handler(veriedRequestData, req);
+        const result = await handler(verifiedRequestData, req);
         responseResult = res.status(200).send(result);
       } catch (raisedError) {
         if (raisedError instanceof Error) {
@@ -115,6 +115,7 @@ export class Mux {
 
   public static init(production: boolean = true): any {
     Mux.production = production;
+    Mux.expressApp.use(express.json());
     for (let i = 0; i < Mux.muxMap.length; i += 1) {
       const {
         method,
@@ -122,7 +123,6 @@ export class Mux {
         validator,
         handler,
       } = Mux.muxMap[i];
-      logger.debug(url);
       Mux.addHandler(method, url, validator, handler);
     }
     logger.info('Server successfully init\n');
