@@ -9,46 +9,35 @@ import xss from 'xss';
  */
 export interface DocumentPost extends Document {
     title: String,
-    author: String,
-    content: String,
+    author: Schema.Types.ObjectId,
+    body: String,
     tags: String[],
-    comments: {
-        id: Number,
-        body: String,
-        date: Date,
-        replyTo: Number
-    }[],
     created: Date
     updated: Date
     hidden: Boolean,
-    votes: Number,
+    vote: Number,
+    devote: Number,
     favs: Number
 }
 
 export const SchemaPost = new Schema({
   title: String,
-  author: String,
-  content: String,
+  author: { type: Schema.Types.ObjectId, ref: 'User' },
+  body: String,
   tags: [String],
-  comments: [{
-    id: Number,
-    body: String,
-    date: Date,
-    replyTo: Number,
-  }],
   created: { type: Date, default: Date.now },
   updated: { type: Date, default: Date.now },
   hidden: Boolean,
-  votes: Number,
-  favs: Number,
+  vote: Number,
+  devote: Number,
 });
 
 SchemaPost.pre<DocumentPost>('save', function prevSavePost(next) {
   this.updated = new Date();
   // encode body before adding it to collection
   this.title = xss(this.title.toString());
-  this.content = xss(this.content.toString());
-  this.author = xss(this.author.toString());
+  this.body = xss(this.body.toString());
+  this.body = xss(this.author.toString());
   next();
 });
 

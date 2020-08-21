@@ -1,8 +1,11 @@
 import cluster from 'cluster';
+import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { Mux } from './framework/mux';
 import logger from './helper/logger';
+import './mux/hello-world';
+import Singleton from './helper/express';
 
 import './mux/document';
 
@@ -45,18 +48,25 @@ class AppMain {
   }
 
   /**
-   * Start wokers
+   * Start workers
    * @private
    * @static
    * @param {string} host
    * @param {number} port
    * @memberof AppMain
    */
-  private static startWoker(host: string, port: number) {
-    AppMain.connectMongo();
-    // const app = express();
-    const app = Mux.init(NODE_ENV !== 'development');
-    logger.info('Service process online pid:', process.pid, 'bind:', host, port);
+  private static startWorker(host: string, port: number) {
+    // AppMain.connectMongo();
+    const app = Singleton.getExpressInstance();
+    app.use(express.json());
+    Mux.init(NODE_ENV !== 'development');
+    logger.info(
+      'Service process online pid:',
+      process.pid,
+      'bind:',
+      host,
+      port,
+    );
     app.listen(port, host);
   }
 
@@ -69,7 +79,8 @@ class AppMain {
       logger.info('Master process online pid:', process.pid);
       AppMain.startMaster();
     } else if (SERVICE_HOST && SERVICE_PORT) {
-      AppMain.startWoker(SERVICE_HOST, parseInt(SERVICE_PORT, 10));
+      logger.info('Service online:', SERVICE_HOST, 'port:', SERVICE_PORT);
+      AppMain.startWorker(SERVICE_HOST, parseInt(SERVICE_PORT, 10));
     }
   }
 }

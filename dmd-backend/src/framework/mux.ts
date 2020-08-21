@@ -5,7 +5,7 @@ import {
   ResponseList,
   ResponseRecord,
 } from './response';
-import logger from '../helper/logger';
+import Singleton from '../helper/express';
 
 export interface RequestData {
   body: any;
@@ -18,7 +18,7 @@ export interface MuxHandler {
 }
 
 export class Mux {
-  private static expressApp: any = express();
+  private static expressApp: any = Singleton.getExpressInstance();
 
   private static muxMap: any[] = [];
 
@@ -125,7 +125,6 @@ export class Mux {
       } = Mux.muxMap[i];
       Mux.addHandler(method, url, validator, handler);
     }
-    logger.info('Server successfully init\n');
     return Mux.expressApp;
   }
 }
