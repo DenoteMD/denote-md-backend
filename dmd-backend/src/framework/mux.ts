@@ -5,6 +5,7 @@ import {
   ResponseList,
   ResponseRecord,
 } from './response';
+import Singleton from '../helper/express';
 
 export interface RequestData {
   body: any;
@@ -17,7 +18,7 @@ export interface MuxHandler {
 }
 
 export class Mux {
-  private static expressApp: any = express();
+  private static expressApp: any = Singleton.getExpressInstance();
 
   private static muxMap: any[] = [];
 
@@ -77,17 +78,17 @@ export class Mux {
     Mux.expressApp[methodName](url, async (req: express.Request, res :express.Response) => {
       let responseResult = null;
       try {
-        let veriedRequestData;
+        let verifiedRequestData;
         if (validator instanceof Validator) {
-          veriedRequestData = validator.validate(req);
+          verifiedRequestData = validator.validate(req);
         } else {
-          veriedRequestData = {
+          verifiedRequestData = {
             body: {},
             params: {},
             query: {},
           };
         }
-        const result = await handler(veriedRequestData, req);
+        const result = await handler(verifiedRequestData, req);
         responseResult = res.status(200).send(result);
       } catch (raisedError) {
         if (raisedError instanceof Error) {
