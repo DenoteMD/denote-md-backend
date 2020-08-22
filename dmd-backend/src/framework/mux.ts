@@ -115,7 +115,6 @@ export class Mux {
 
   public static init(production: boolean = true): any {
     Mux.production = production;
-    Mux.expressApp.use(express.json());
     for (let i = 0; i < Mux.muxMap.length; i += 1) {
       const {
         method,
