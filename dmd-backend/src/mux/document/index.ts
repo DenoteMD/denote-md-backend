@@ -6,13 +6,13 @@ import logger from '../../helper/logger';
 import validators from './validators';
 
 const {
-  postDocumentValidator,
-  getListDocumentValidator,
+  postValidator,
+  getListValidator,
 } = validators;
 
 Mux.get(
-  '/',
-  getListDocumentValidator,
+  '/posts',
+  getListValidator,
   async (reqData: RequestData): Promise<ResponseList> => {
     const { offset, limit, order } = reqData.query;
     const total = await ModelPost.count({});
@@ -37,20 +37,20 @@ Mux.get(
 );
 
 Mux.post(
-  '/',
-  postDocumentValidator,
+  '/post',
+  postValidator,
   async (reqData: RequestData): Promise<ResponseRecord> => {
     const { body: requestBody } = reqData;
     const {
       title,
       author,
-      content,
+      body,
     }: DocumentPost = requestBody;
     logger.debug('Handling POST document');
     const documentModel = new ModelPost({
       title,
       author,
-      content,
+      body,
       hidden: false,
       votes: 0,
       replyTo: 0,

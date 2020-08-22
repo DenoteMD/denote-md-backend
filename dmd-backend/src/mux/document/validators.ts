@@ -1,6 +1,6 @@
 import { Validator, FieldLocation, FieldType } from '../../framework/validator';
 
-const getListDocumentValidator: Validator = new Validator([
+const getListValidator: Validator = new Validator([
   {
     location: FieldLocation.query,
     name: 'offset',
@@ -25,7 +25,7 @@ const getListDocumentValidator: Validator = new Validator([
   },
 ]);
 
-const postDocumentValidator: Validator = new Validator([
+const postValidator: Validator = new Validator([
   {
     location: FieldLocation.body,
     type: FieldType.string,
@@ -49,7 +49,7 @@ const postDocumentValidator: Validator = new Validator([
   {
     location: FieldLocation.body,
     type: FieldType.string,
-    name: 'content',
+    name: 'body',
     defaultValue: '',
     validator: (val) => {
       if (val.length > -1) {
@@ -61,6 +61,6 @@ const postDocumentValidator: Validator = new Validator([
 ]);
 
 export default {
-  postDocumentValidator,
-  getListDocumentValidator,
+  postValidator,
+  getListValidator,
 };
