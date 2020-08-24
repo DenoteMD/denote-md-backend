@@ -7,7 +7,7 @@ import logger from './helper/logger';
 import './mux/hello-world';
 import Singleton from './helper/express';
 
-import './mux/document';
+import './mux/post';
 
 dotenv.config();
 const {
