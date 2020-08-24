@@ -27,9 +27,9 @@ Mux.get(
       success: true,
       result: {
         total,
-        offset,
         limit,
         order,
+        offset,
         records: listDocuments,
       },
     };
@@ -48,12 +48,12 @@ Mux.post(
     }: DocumentPost = requestBody;
     logger.debug('Handling POST document');
     const documentModel = new ModelPost({
+      body,
       title,
       author,
-      body,
-      hidden: false,
       votes: 0,
       replyTo: 0,
+      hidden: false,
     });
     const result = await documentModel.save();
     logger.debug('Successfully added a document');

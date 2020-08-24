@@ -37,7 +37,6 @@ SchemaPost.pre<DocumentPost>('save', function prevSavePost(next) {
   // encode body before adding it to collection
   this.title = xss(this.title.toString());
   this.body = xss(this.body.toString());
-  this.body = xss(this.author.toString());
   next();
 });
 
