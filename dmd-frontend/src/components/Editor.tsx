@@ -21,8 +21,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: '10px',
     fontFamily: 'Consolas,Courier,serif',
     lineHeight: '21px;',
-    boxSizing: 'border-box',
-  }
+    boxSizing: 'border-box'
+  },
+  grid: {
+    maxWidth: '494px',
+    minWidth: '494px'
+  },
 }));
 
 interface comProps {
@@ -46,28 +50,33 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
     setText('');
   };
 
+  const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(e.currentTarget.value);
+  };
+
   return (
     <div className={`${classes.wrapper} ${className}`}>
       <form className="" onSubmit={onFormSubmit}>
         <div>       
           <Grid container spacing={2}> 
-          <Grid item xs={6} >
+          <Grid item xs={6} className={classes.grid}>
             <Typography className={classes.label} variant="h6" noWrap>
               New paste
             </Typography>
             <TextField id="title" label="Paste Title"/>
             <TextArea value={text}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                      setText(e.currentTarget.value);
-                    }}
+                    onChange={handleOnChange}
                     className={classes.textArea}
                     rowsMin="15"
             ></TextArea>
             </Grid>
-            <Grid item xs={6}>  
-            <Typography className={classes.label} variant="h6" noWrap>
+            <Grid item xs={6} className={classes.grid}>   
+              <Typography className={classes.label} variant="h6" noWrap>
                 Static content
               </Typography>
+              <div>
+                {text}
+              </div>
             </Grid>
           </Grid>       
         </div>
