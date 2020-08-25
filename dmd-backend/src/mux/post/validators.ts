@@ -1,6 +1,6 @@
 import { Validator, FieldLocation, FieldType } from '../../framework/validator';
 
-const getListValidator: Validator = new Validator([
+export const getListValidator: Validator = new Validator([
   {
     location: FieldLocation.query,
     name: 'offset',
@@ -25,7 +25,7 @@ const getListValidator: Validator = new Validator([
   },
 ]);
 
-const postValidator: Validator = new Validator([
+export const postValidator: Validator = new Validator([
   {
     location: FieldLocation.body,
     type: FieldType.string,
@@ -59,8 +59,3 @@ const postValidator: Validator = new Validator([
     },
   },
 ]);
-
-export default {
-  postValidator,
-  getListValidator,
-};

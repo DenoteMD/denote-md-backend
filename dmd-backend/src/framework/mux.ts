@@ -113,7 +113,7 @@ export class Mux {
     });
   }
 
-  public static init(production: boolean = true): any {
+  public static init(production: boolean = true) {
     Mux.production = production;
     for (let i = 0; i < Mux.muxMap.length; i += 1) {
       const {
@@ -124,7 +124,6 @@ export class Mux {
       } = Mux.muxMap[i];
       Mux.addHandler(method, url, validator, handler);
     }
-    return Mux.expressApp;
   }
 }
 

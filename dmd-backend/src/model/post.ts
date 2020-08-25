@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import xss from 'xss';
 
 /**
  * Document of a post
@@ -34,9 +33,6 @@ export const SchemaPost = new Schema({
 
 SchemaPost.pre<DocumentPost>('save', function prevSavePost(next) {
   this.updated = new Date();
-  // encode body before adding it to collection
-  this.title = xss(this.title.toString());
-  this.body = xss(this.body.toString());
   next();
 });
 

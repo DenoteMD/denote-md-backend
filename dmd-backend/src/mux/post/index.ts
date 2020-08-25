@@ -3,12 +3,10 @@ import { DocumentPost, ModelPost } from '../../model/post';
 import { ResponseRecord, ResponseList } from '../../framework/response';
 import logger from '../../helper/logger';
 
-import validators from './validators';
-
-const {
+import {
   postValidator,
   getListValidator,
-} = validators;
+} from './validators';
 
 Mux.get(
   '/posts',
