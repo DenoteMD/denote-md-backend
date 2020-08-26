@@ -21,6 +21,7 @@ const theme = createMuiTheme({
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     display: 'flex',
+    flexWrap: 'wrap'
   },
   editor: {
     flexGrow: 1,
@@ -46,7 +47,6 @@ const App = () => {
       <Topbar />
       <Container className={classes.container}>
         <Editor className={classes.editor} onSaveFunc={onEditorSave}></Editor>
-        {/* <div className={classes.sidebar}></div> */} 
       </Container>
     </MuiThemeProvider>
   );

@@ -1,12 +1,11 @@
 import React from 'react';
-
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import TextArea from '@material-ui/core/TextareaAutosize';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
-import { Grid } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -16,15 +15,16 @@ const useStyles = makeStyles((theme: Theme) => ({
   textArea: {
     marginTop: '10px',
     marginBottom: '10px',
-    width: '100%',
+    minWidth: '100%',
+    maxwidth: '100%',
     fontSize: '14px',
     padding: '10px',
     fontFamily: 'Consolas,Courier,serif',
     lineHeight: '21px;',
     boxSizing: 'border-box',
   },
-  staticContentDiv: {
-    boxSizing: 'border-box',
+  gridContainer: {
+    marginTop: '20px',
   }
 }));
 
@@ -56,26 +56,32 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
   return (
     <div className={`${classes.wrapper} ${className}`}>
       <form className="" onSubmit={onFormSubmit}>
-        <div>       
+        <div>
           <Grid container spacing={2}> 
-          <Grid item sm={6} xs={12} zeroMinWidth>
-            <Typography className={classes.label} variant="h6" noWrap>
-              New paste
-            </Typography>
-            <TextField id="title" label="Paste Title"/>
-            <TextArea value={text}
-                    onChange={handleOnChange}
-                    className={classes.textArea}
-                    rowsMin="15"
-            ></TextArea>
+            <Grid item sm={6} xs={12}>
+              <TextField id="title" label="Title" fullWidth/>
+            </Grid>
+          </Grid>          
+        </div>
+        <div>       
+          <Grid container spacing={2} className={classes.gridContainer}> 
+            <Grid item sm={6} xs={12} zeroMinWidth>
+              <Typography className={classes.label} variant="h6" noWrap>
+                New paste
+              </Typography>
+              <TextArea value={text}
+                      onChange={handleOnChange}
+                      className={classes.textArea}
+                      rowsMin="15"
+              ></TextArea>
             </Grid>
             <Grid item sm={6} xs={12} zeroMinWidth>   
               <Typography className={classes.label} variant="h6" noWrap>
                 Static content
               </Typography>
-              <div>
+              <Box>
                 {text}
-              </div>
+              </Box>
             </Grid>
           </Grid>       
         </div>
