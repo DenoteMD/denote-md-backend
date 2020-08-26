@@ -46,7 +46,7 @@ const App = () => {
       <Topbar />
       <Container className={classes.container}>
         <Editor className={classes.editor} onSaveFunc={onEditorSave}></Editor>
-        <div className={classes.sidebar}></div>
+        {/* <div className={classes.sidebar}></div> */} 
       </Container>
     </MuiThemeProvider>
   );

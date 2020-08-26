@@ -21,12 +21,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: '10px',
     fontFamily: 'Consolas,Courier,serif',
     lineHeight: '21px;',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
   },
-  grid: {
-    maxWidth: '494px',
-    minWidth: '494px'
-  },
+  staticContentDiv: {
+    boxSizing: 'border-box',
+  }
 }));
 
 interface comProps {
@@ -59,7 +58,7 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
       <form className="" onSubmit={onFormSubmit}>
         <div>       
           <Grid container spacing={2}> 
-          <Grid item xs={6} className={classes.grid}>
+          <Grid item sm={6} xs={12} zeroMinWidth>
             <Typography className={classes.label} variant="h6" noWrap>
               New paste
             </Typography>
@@ -70,7 +69,7 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
                     rowsMin="15"
             ></TextArea>
             </Grid>
-            <Grid item xs={6} className={classes.grid}>   
+            <Grid item sm={6} xs={12} zeroMinWidth>   
               <Typography className={classes.label} variant="h6" noWrap>
                 Static content
               </Typography>
