@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
+import SimpleReactValidator from 'simple-react-validator';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -34,24 +35,53 @@ interface comProps {
 }
 
 interface comState {
-  text: string;
+  titleValue: string;
+  contentValue: string;
 }
 
 const Editor = ({ className, onSaveFunc }: comProps) => {
   const classes = useStyles();
 
-  const [text, setText] = React.useState('');
+  const [titleValue, setTitleValue] = React.useState('');
+  const [contentValue, setContentValue] = React.useState('');
+  const simpleValidator = React.useRef(new SimpleReactValidator())
 
   const onFormSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSaveFunc(text);
+    onSaveFunc(contentValue);
 
-    setText('');
+    setTitleValue('');
+    setContentValue('');
   };
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setText(e.currentTarget.value);
+  const handleChangeTileValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if(validatorTitleValue.allValid()){
+      setTitleValue(e.currentTarget.value);
+    }
+    else{
+      validatorTitleValue.showMessages();
+    }
   };
+
+  const handleChangeContentValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContentValue(e.currentTarget.value);
+  };
+
+  const validatorTitleValue = new SimpleReactValidator({
+    className: 'text-danger',
+    messages: {},
+    validators: {
+      ip: {
+        message: 'Must be input from 1 to 256 characters',
+        rule: function() { 
+          if(titleValue.length > 1 && titleValue.length > 256){
+            return true;
+          }
+          return false;
+        }
+      }
+    }
+  });
 
   return (
     <div className={`${classes.wrapper} ${className}`}>
@@ -59,7 +89,13 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
         <div>
           <Grid container spacing={2}> 
             <Grid item sm={6} xs={12}>
-              <TextField id="title" label="Title" fullWidth/>
+              <TextField id="title"
+                         name="title"
+                         label="Title"
+                         fullWidth
+                         value={titleValue}
+                         onChange={handleChangeTileValue}/>
+              {validatorTitleValue.message}
             </Grid>
           </Grid>          
         </div>
@@ -69,8 +105,8 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
               <Typography className={classes.label} variant="h6" noWrap>
                 New paste
               </Typography>
-              <TextArea value={text}
-                      onChange={handleOnChange}
+              <TextArea value={contentValue}
+                      onChange={handleChangeContentValue}
                       className={classes.textArea}
                       rowsMin="15"
               ></TextArea>
@@ -80,7 +116,7 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
                 Static content
               </Typography>
               <Box>
-                {text}
+                {contentValue}
               </Box>
             </Grid>
           </Grid>       
