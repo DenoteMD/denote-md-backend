@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import SimpleReactValidator from 'simple-react-validator';
+import { useForm } from 'react-hook-form';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -26,12 +26,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   gridContainer: {
     marginTop: '20px',
+  },
+  msgRequire:{
+    color: "red"
   }
 }));
 
 interface comProps {
   className: string;
-  onSaveFunc: (term: string) => void;
+  onSaveFunc: (title: string, content: string) => void;
 }
 
 interface comState {
@@ -44,44 +47,35 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
 
   const [titleValue, setTitleValue] = React.useState('');
   const [contentValue, setContentValue] = React.useState('');
-  const simpleValidator = React.useRef(new SimpleReactValidator())
+  const { handleSubmit, register, errors} = useForm({
+    mode: "onChange"
+  });
 
   const onFormSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSaveFunc(contentValue);
-
+    onSaveFunc(titleValue, contentValue);
     setTitleValue('');
     setContentValue('');
   };
 
   const handleChangeTileValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if(validatorTitleValue.allValid()){
-      setTitleValue(e.currentTarget.value);
-    }
-    else{
-      validatorTitleValue.showMessages();
-    }
+    setTitleValue(e.currentTarget.value);
   };
 
   const handleChangeContentValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContentValue(e.currentTarget.value);
   };
-
-  const validatorTitleValue = new SimpleReactValidator({
-    className: 'text-danger',
-    messages: {},
-    validators: {
-      ip: {
-        message: 'Must be input from 1 to 256 characters',
-        rule: function() { 
-          if(titleValue.length > 1 && titleValue.length > 256){
-            return true;
-          }
-          return false;
-        }
-      }
-    }
-  });
+  
+  const showMessageError = (_fieldName: string) => {
+    let error = (errors as any)[_fieldName];
+    return error ? (
+      <div className={classes.msgRequire}>
+        <Box component="label">
+          {error.message || "Field is required"}
+        </Box>
+      </div>
+    ) : null;
+  };
 
   return (
     <div className={`${classes.wrapper} ${className}`}>
@@ -94,8 +88,20 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
                          label="Title"
                          fullWidth
                          value={titleValue}
-                         onChange={handleChangeTileValue}/>
-              {validatorTitleValue.message}
+                         onChange={handleChangeTileValue}
+                         inputRef={register({
+                          required: "Required",
+                          minLength: {
+                            value: 1,
+                            message: "Must be enter from 1 to 256 characters"
+                          },
+                          maxLength: {
+                            value: 256,
+                            message: "Must be enter from 1 to 256 characters"
+                          }
+                        })}/>
+                {showMessageError("title")}
+                <div hidden dangerouslySetInnerHTML={{__html: titleValue}} />
             </Grid>
           </Grid>          
         </div>
