@@ -10,7 +10,8 @@ import Container from '@material-ui/core/Container';
 import blue from '@material-ui/core/colors/blue';
 
 import Topbar from './Topbar';
-import Editor from './Editor';
+import Login from '../pages/login';
+// import Editor from './Editor';
 
 const theme = createMuiTheme({
   palette: {
@@ -45,8 +46,7 @@ const App = () => {
     <MuiThemeProvider theme={theme}>
       <Topbar />
       <Container className={classes.container}>
-        <Editor className={classes.editor} onSaveFunc={onEditorSave}></Editor>
-        <div className={classes.sidebar}></div>
+        <Login />
       </Container>
     </MuiThemeProvider>
   );
