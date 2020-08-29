@@ -37,11 +37,6 @@ interface comProps {
   onSaveFunc: (title: string, content: string) => void;
 }
 
-interface comState {
-  titleValue: string;
-  contentValue: string;
-}
-
 const Editor = ({ className, onSaveFunc }: comProps) => {
   const classes = useStyles();
 
@@ -50,13 +45,15 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
   const { handleSubmit, register, errors} = useForm({
     mode: "onChange"
   });
+  const createDOMPurify = require('dompurify');
+  const purifyDOM = createDOMPurify(window);
 
-  const onFormSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const onFormSubmit = React.useCallback((data, e) => {
     e.preventDefault();
-    onSaveFunc(titleValue, contentValue);
+    onSaveFunc(purifyDOM.sanitize(titleValue), purifyDOM.sanitize(contentValue));
     setTitleValue('');
     setContentValue('');
-  };
+  }, []);
 
   const handleChangeTileValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTitleValue(e.currentTarget.value);
@@ -79,7 +76,7 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
 
   return (
     <div className={`${classes.wrapper} ${className}`}>
-      <form className="" onSubmit={onFormSubmit}>
+      <form className="" onSubmit={handleSubmit(onFormSubmit)}>
         <div>
           <Grid container spacing={2}> 
             <Grid item sm={6} xs={12}>
@@ -101,7 +98,6 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
                           }
                         })}/>
                 {showMessageError("title")}
-                <div hidden dangerouslySetInnerHTML={{__html: titleValue}} />
             </Grid>
           </Grid>          
         </div>
