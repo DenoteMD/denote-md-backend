@@ -42,15 +42,12 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
 
   const [titleValue, setTitleValue] = React.useState('');
   const [contentValue, setContentValue] = React.useState('');
-  const { handleSubmit, register, errors} = useForm({
-    mode: "onChange"
-  });
-  const createDOMPurify = require('dompurify');
-  const purifyDOM = createDOMPurify(window);
+  const { handleSubmit, register, errors} = useForm();
+  const xss = require("xss");
 
   const onFormSubmit = React.useCallback((data, e) => {
     e.preventDefault();
-    onSaveFunc(purifyDOM.sanitize(titleValue), purifyDOM.sanitize(contentValue));
+    onSaveFunc(xss(data.title), xss(data.content));
     setTitleValue('');
     setContentValue('');
   }, []);
@@ -107,10 +104,12 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
               <Typography className={classes.label} variant="h6" noWrap>
                 New paste
               </Typography>
-              <TextArea value={contentValue}
-                      onChange={handleChangeContentValue}
-                      className={classes.textArea}
-                      rowsMin="15"
+              <TextArea id="content"
+                        name= "content"
+                        value={contentValue}
+                        onChange={handleChangeContentValue}
+                        className={classes.textArea}
+                        rowsMin="15"
               ></TextArea>
             </Grid>
             <Grid item sm={6} xs={12} zeroMinWidth>   
