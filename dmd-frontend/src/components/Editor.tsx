@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import { useForm } from 'react-hook-form';
+import Markdown from '../components/Markdown';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -106,7 +107,7 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
               </Typography>
               <TextArea id="content"
                         name= "content"
-                        value={contentValue}
+                        //value={contentValue}
                         onChange={handleChangeContentValue}
                         className={classes.textArea}
                         rowsMin="15"
@@ -116,9 +117,7 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
               <Typography className={classes.label} variant="h6" noWrap>
                 Static content
               </Typography>
-              <Box>
-                {contentValue}
-              </Box>
+              <Markdown contentMarkdown={contentValue}></Markdown>     
             </Grid>
           </Grid>       
         </div>

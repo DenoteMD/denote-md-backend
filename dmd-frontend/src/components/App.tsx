@@ -38,7 +38,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 const App = () => {
   const classes = useStyles();
 
-  const onEditorSave = (content: string) => {
+  const onEditorSave = (title: string, content: string) => {
+    console.log(title);
     console.log(content);
   };
 
