@@ -1,6 +1,6 @@
 {
   "name": "dmd-backend",
-  "version": "0.0.4",
+  "version": "0.0.90",
   "description": "DenoteMD backend",
   "author": "chiro@fkguru.com",
   "license": "MIT",
@@ -44,6 +44,7 @@
     "mongoose": "^5.9.16",
     "uuid": "^7.0.3",
     "winston": "^3.2.1",
-    "winston-transport": "^4.3.0"
+    "winston-transport": "^4.3.0",
+    "xss": "^1.0.8"
   }
 }
