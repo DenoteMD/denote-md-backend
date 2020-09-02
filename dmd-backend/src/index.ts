@@ -1,13 +1,11 @@
-import cluster from 'cluster';
 import express from 'express';
+import cluster from 'cluster';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { Mux } from './framework/mux';
 import logger from './helper/logger';
 import './mux/hello-world';
 import Singleton from './helper/express';
-
-import './mux/post';
 
 dotenv.config();
 const {
