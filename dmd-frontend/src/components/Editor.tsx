@@ -72,6 +72,22 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
     ) : null;
   };
 
+  const setRequiredForTitle = register({
+    required: "Required",
+    minLength: {
+      value: 1,
+      message: "Must be enter from 1 to 256 characters"
+    },
+    maxLength: {
+      value: 256,
+      message: "Must be enter from 1 to 256 characters"
+    }
+  });
+
+  const setRequireForContent = register({
+    required: "Required"
+  });
+
   return (
     <div className={`${classes.wrapper} ${className}`}>
       <form className="" onSubmit={handleSubmit(onFormSubmit)}>
@@ -84,17 +100,7 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
                          fullWidth
                          value={titleValue}
                          onChange={handleChangeTileValue}
-                         inputRef={register({
-                          required: "Required",
-                          minLength: {
-                            value: 1,
-                            message: "Must be enter from 1 to 256 characters"
-                          },
-                          maxLength: {
-                            value: 256,
-                            message: "Must be enter from 1 to 256 characters"
-                          }
-                        })}/>
+                         inputRef={setRequiredForTitle}/>
                 {showMessageError("title")}
             </Grid>
           </Grid>          
@@ -106,12 +112,14 @@ const Editor = ({ className, onSaveFunc }: comProps) => {
                 New paste
               </Typography>
               <TextArea id="content"
-                        name= "content"
-                        //value={contentValue}
+                        name="content"
+                        value={contentValue}
                         onChange={handleChangeContentValue}
                         className={classes.textArea}
                         rowsMin="15"
+                        ref={setRequireForContent}
               ></TextArea>
+              {showMessageError("content")}
             </Grid>
             <Grid item sm={6} xs={12} zeroMinWidth>   
               <Typography className={classes.label} variant="h6" noWrap>
