@@ -2,17 +2,21 @@ import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 
+/* material-ui components import */
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+
+import { 
+    loginFormRefs,
+} from './constants';
 
 import {
-    checkPassword,
-    checkUsername,
-} from '../../utils/regex';
+  StyledForm,
+  StyledPaper,
+  FlexContainer,
+  LoginFormTitle,
+  StyledTextField,
+} from './styles';
 
 const Login: React.FC<any> = (props: any) => {
 
@@ -40,25 +44,13 @@ const Login: React.FC<any> = (props: any) => {
     }, [setValue]);
 
     useEffect(() => {
-        register('username', {
-            validate: (value) => {
-                if (value.length === 0) return 'Username cannot be empty';
-                return checkUsername(value) || 'Invalid username format';
-            }
-        });
-        register('password', {
-            validate: (value: string) => {
-                if (value.length === 0) return 'Password cannot be empty';
-                if (value.length < 8 || value.length > 32) return 'Password must be between 8 and 32 characters';
-                return checkPassword(value) || 'Invalid password, please have a look at our password policy';
-            }
+        loginFormRefs.forEach((ref) => {
+            register(ref.name, ref.options);
         });
     }, [register]);
 
     return (
-        <FlexContainer
-            maxWidth="md"
-        >
+        <FlexContainer maxWidth="md">
             <Grid
                 container
                 justify="center"
@@ -70,16 +62,12 @@ const Login: React.FC<any> = (props: any) => {
                     sm={12}
                     md={6}
                 >
-                    <StyledPaper
-                        elevation={3}
-                    >
+                    <StyledPaper elevation={3}>
                         <Grid
                             container
                             direction="column"
                         >
-                            <Grid
-                                item
-                            >
+                            <Grid item>
                                 <LoginFormTitle variant="h3">LOGIN</LoginFormTitle>
                             </Grid>
                             <Grid item>
@@ -88,8 +76,8 @@ const Login: React.FC<any> = (props: any) => {
                                      name="username"
                                      label="Username"
                                      ref={register}
-                                     error={Boolean(errors?.username)}
                                      onChange={_handleUsernameChange}
+                                     error={Boolean(errors?.username)}
                                      helperText={errors?.username?.message}
                                  /> 
                                  <StyledTextField
@@ -97,8 +85,8 @@ const Login: React.FC<any> = (props: any) => {
                                      type="password"
                                      label="Password"
                                      ref={register}
-                                     error={Boolean(errors?.password)}
                                      onChange={_handlePasswordChange}
+                                     error={Boolean(errors?.password)}
                                      helperText={errors?.password?.message}
                                  />
                                  <Button
@@ -118,32 +106,6 @@ const Login: React.FC<any> = (props: any) => {
     );
 };
 
-const LoginFormTitle = styled(Typography)`
-    padding: 20px 0;
-`;
-
-const StyledPaper = styled(Paper)`
-    width: 100%;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
-const FlexContainer = styled(Container)`
-    display: flex;
-    height: 90vh;
-`;
-
-
-const StyledTextField = styled(TextField)`
-    margin-bottom: 20px;
-`;
-
-const StyledForm = styled.form`
-    display: flex;
-    flex-direction: column;
-`;
 
 export default Login;
 
