@@ -9,18 +9,13 @@ import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-/*
- *  Must contains:
- *    - from 8 to 32 characters
- *    - at least 1 Uppercase character
- *    - at least 1 lowercase character
- *    - at least 1 numberic character
- *    - at least 1 special character
- * */
-const passwordReg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]|[_]).{8,32}$/;
-const usernameReg = /^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
+import {
+    checkPassword,
+    checkUsername,
+} from '../../utils/regex';
 
 const Login: React.FC<any> = (props: any) => {
+
     const { handleSubmit, register, errors, setValue } = useForm<{
         username: string,
         password: string,
@@ -48,14 +43,14 @@ const Login: React.FC<any> = (props: any) => {
         register('username', {
             validate: (value) => {
                 if (value.length === 0) return 'Username cannot be empty';
-                return usernameReg.test(value) || 'Invalid username format';
+                return checkUsername(value) || 'Invalid username format';
             }
         });
         register('password', {
-            validate: (value) => {
+            validate: (value: string) => {
                 if (value.length === 0) return 'Password cannot be empty';
                 if (value.length < 8 || value.length > 32) return 'Password must be between 8 and 32 characters';
-                return passwordReg.test(value) || 'Invalid password, please have a look at our password policy';
+                return checkPassword(value) || 'Invalid password, please have a look at our password policy';
             }
         });
     }, [register]);
