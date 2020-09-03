@@ -22,6 +22,7 @@ const theme = createMuiTheme({
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     display: 'flex',
+    flexWrap: 'wrap'
   },
   editor: {
     flexGrow: 1,
