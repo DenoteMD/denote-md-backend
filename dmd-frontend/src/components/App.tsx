@@ -1,6 +1,11 @@
 import React from 'react';
-
 import { Theme } from '@material-ui/core';
+import {
+    Route,
+    Switch,
+    Redirect,
+    BrowserRouter as Router,
+} from 'react-router-dom';
 import {
   MuiThemeProvider,
   createMuiTheme,
@@ -11,7 +16,7 @@ import blue from '@material-ui/core/colors/blue';
 
 import Topbar from './Topbar';
 import Login from '../pages/login';
-// import Editor from './Editor';
+import Editor from './Editor';
 
 const theme = createMuiTheme({
   palette: {
@@ -38,18 +43,28 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const App = () => {
   const classes = useStyles();
-
   const onEditorSave = (content: string) => {
     console.log(content);
   };
-
   return (
-    <MuiThemeProvider theme={theme}>
-      <Topbar />
-      <Container className={classes.container}>
-        <Login />
-      </Container>
-    </MuiThemeProvider>
+      <Router>
+          <MuiThemeProvider theme={theme}>
+              <Topbar />
+              <Container className={classes.container}>
+                  <Switch>
+                      <Route path="/" exact>
+                          <Redirect to="/login" />
+                      </Route>
+                      <Route path="/login" default>
+                          <Login />
+                      </Route>
+                      <Route path="/editor">
+                          <Editor className={classes.editor} onSaveFunc={onEditorSave} />
+                      </Route>
+                  </Switch>
+              </Container>
+          </MuiThemeProvider>
+      </Router>
   );
 };
 
