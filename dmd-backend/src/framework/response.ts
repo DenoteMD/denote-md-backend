@@ -1,16 +1,16 @@
 export interface ErrorInterface {
   message: string;
-  stack:string;
+  stack: string;
 }
 
 export interface Ordering {
-  column: string
-  order: RecordOrdering
+  column: string;
+  order: RecordOrdering;
 }
 
 export enum RecordOrdering {
   asc = 'asc',
-  desc = 'desc'
+  desc = 'desc',
 }
 
 export interface Pagination {
@@ -24,11 +24,11 @@ export interface RecordList {
   offset: number;
   order: Ordering[];
   limit: number;
-  records: Record[]
+  records: Record[];
 }
 
 export interface Record {
-  [key: string]: any
+  [key: string]: any;
 }
 
 export interface ResponseRecord {
@@ -40,7 +40,7 @@ export interface ResponseRecord {
 export interface ResponseList {
   success: boolean;
   deprecated?: boolean;
-  result: RecordList
+  result: RecordList;
 }
 
 export interface ResponseError {

@@ -7,10 +7,10 @@ import mongoose, { Schema, Document } from 'mongoose';
  * @extends {Document}
  */
 export interface DocumentUser extends Document {
-    username: String,
-    secretKey: Buffer,
-    created: Date
-    active: Boolean,
+  username: String;
+  secretKey: Buffer;
+  created: Date;
+  active: Boolean;
 }
 
 export const SchemaPost = new Schema({

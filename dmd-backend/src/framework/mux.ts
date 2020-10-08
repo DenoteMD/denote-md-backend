@@ -1,10 +1,6 @@
 import express from 'express';
 import { Validator } from './validator';
-import {
-  ResponseError,
-  ResponseList,
-  ResponseRecord,
-} from './response';
+import { ResponseError, ResponseList, ResponseRecord } from './response';
 import Singleton from '../helper/express';
 
 export interface RequestData {
@@ -14,7 +10,9 @@ export interface RequestData {
 }
 
 export interface MuxHandler {
-  (requestData: RequestData, req?: express.Request): Promise<ResponseRecord| ResponseError| ResponseList>
+  (requestData: RequestData, req?: express.Request): Promise<
+    ResponseRecord | ResponseError | ResponseList
+  >;
 }
 
 export class Mux {
@@ -22,9 +20,13 @@ export class Mux {
 
   private static muxMap: any[] = [];
 
-  private static production :boolean = true;
+  private static production: boolean = true;
 
-  public static get(url:string, validator: Validator|undefined, handler:MuxHandler) {
+  public static get(
+    url: string,
+    validator: Validator | undefined,
+    handler: MuxHandler,
+  ) {
     Mux.muxMap.push({
       method: 'get',
       url,
@@ -33,7 +35,11 @@ export class Mux {
     });
   }
 
-  public static post(url:string, validator: Validator|undefined, handler:MuxHandler) {
+  public static post(
+    url: string,
+    validator: Validator | undefined,
+    handler: MuxHandler,
+  ) {
     Mux.muxMap.push({
       method: 'post',
       url,
@@ -42,7 +48,11 @@ export class Mux {
     });
   }
 
-  public static put(url:string, validator: Validator|undefined, handler:MuxHandler) {
+  public static put(
+    url: string,
+    validator: Validator | undefined,
+    handler: MuxHandler,
+  ) {
     Mux.muxMap.push({
       method: 'put',
       url,
@@ -51,7 +61,11 @@ export class Mux {
     });
   }
 
-  public static delete(url:string, validator: Validator|undefined, handler:MuxHandler) {
+  public static delete(
+    url: string,
+    validator: Validator | undefined,
+    handler: MuxHandler,
+  ) {
     Mux.muxMap.push({
       method: 'delete',
       url,
@@ -60,7 +74,11 @@ export class Mux {
     });
   }
 
-  public static patch(url:string, validator: Validator|undefined, handler:MuxHandler) {
+  public static patch(
+    url: string,
+    validator: Validator | undefined,
+    handler: MuxHandler,
+  ) {
     Mux.muxMap.push({
       method: 'patch',
       url,
@@ -70,58 +88,56 @@ export class Mux {
   }
 
   private static addHandler(
-    methodName : string,
-    url:string,
-    validator: Validator|undefined,
+    methodName: string,
+    url: string,
+    validator: Validator | undefined,
     handler: MuxHandler,
   ) {
-    Mux.expressApp[methodName](url, async (req: express.Request, res :express.Response) => {
-      let responseResult = null;
-      try {
-        let verifiedRequestData;
-        if (validator instanceof Validator) {
-          verifiedRequestData = validator.validate(req);
-        } else {
-          verifiedRequestData = {
-            body: {},
-            params: {},
-            query: {},
-          };
+    Mux.expressApp[methodName](
+      url,
+      async (req: express.Request, res: express.Response) => {
+        let responseResult = null;
+        try {
+          let verifiedRequestData;
+          if (validator instanceof Validator) {
+            verifiedRequestData = validator.validate(req);
+          } else {
+            verifiedRequestData = {
+              body: {},
+              params: {},
+              query: {},
+            };
+          }
+          const result = await handler(verifiedRequestData, req);
+          responseResult = res.status(200).send(result);
+        } catch (raisedError) {
+          if (raisedError instanceof Error) {
+            responseResult = res.status(500).send({
+              success: false,
+              result: {
+                message: raisedError.message,
+                stack: Mux.production ? '' : raisedError.stack,
+              },
+            });
+          } else {
+            responseResult = res.status(500).send({
+              success: false,
+              result: {
+                message: 'Unexpected error!',
+                stack: '',
+              },
+            });
+          }
         }
-        const result = await handler(verifiedRequestData, req);
-        responseResult = res.status(200).send(result);
-      } catch (raisedError) {
-        if (raisedError instanceof Error) {
-          responseResult = res.status(500).send({
-            success: false,
-            result: {
-              message: raisedError.message,
-              stack: Mux.production ? '' : raisedError.stack,
-            },
-          });
-        } else {
-          responseResult = res.status(500).send({
-            success: false,
-            result: {
-              message: 'Unexpected error!',
-              stack: '',
-            },
-          });
-        }
-      }
-      return responseResult;
-    });
+        return responseResult;
+      },
+    );
   }
 
   public static init(production: boolean = true) {
     Mux.production = production;
     for (let i = 0; i < Mux.muxMap.length; i += 1) {
-      const {
-        method,
-        url,
-        validator,
-        handler,
-      } = Mux.muxMap[i];
+      const { method, url, validator, handler } = Mux.muxMap[i];
       Mux.addHandler(method, url, validator, handler);
     }
   }

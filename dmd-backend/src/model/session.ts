@@ -7,10 +7,10 @@ import mongoose, { Schema, Document } from 'mongoose';
  * @extends {Document}
  */
 export interface DocumentSession extends Document {
-    sessionId: String,
-    tempKey: Buffer,
-    user: Schema.Types.ObjectId,
-    created: Date,
+  sessionId: String;
+  tempKey: Buffer;
+  user: Schema.Types.ObjectId;
+  created: Date;
 }
 
 export const SchemaPost = new Schema({

@@ -7,16 +7,16 @@ import mongoose, { Schema, Document } from 'mongoose';
  * @extends {Document}
  */
 export interface DocumentPost extends Document {
-    title: String,
-    author: Schema.Types.ObjectId,
-    body: String,
-    tags: String[],
-    created: Date
-    updated: Date
-    hidden: Boolean,
-    vote: Number,
-    devote: Number,
-    favs: Number
+  title: String;
+  author: Schema.Types.ObjectId;
+  body: String;
+  tags: String[];
+  created: Date;
+  updated: Date;
+  hidden: Boolean;
+  vote: Number;
+  devote: Number;
+  favs: Number;
 }
 
 export const SchemaPost = new Schema({
