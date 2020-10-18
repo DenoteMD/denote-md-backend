@@ -38,6 +38,7 @@
       }
     ],
     "class-methods-use-this": [1],
+    "no-underscore-dangle": [0],
     "@typescript-eslint/no-unused-vars": [
       2,
       {
