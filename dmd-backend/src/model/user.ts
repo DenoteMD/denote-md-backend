@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Document of a user
@@ -6,18 +7,24 @@ import mongoose, { Schema, Document } from 'mongoose';
  * @interface DocumentUser
  * @extends {Document}
  */
-export interface DocumentUser extends Document {
-    username: String,
-    secretKey: Buffer,
-    created: Date
-    active: Boolean,
+export interface IDocumentUser extends Document {
+  uuid: string;
+  alias: String;
+  status: String;
+  userId: String;
+  created: Date;
+  active: Boolean;
 }
 
-export const SchemaPost = new Schema({
-  username: String,
-  secretKey: Schema.Types.Buffer,
+export const SchemaUser = new Schema({
+  uuid: { type: String, default: uuidv4(), unique: true, index: true },
+  alias: { type: String, unique: true, index: true },
+  status: String,
+  vote: { type: Number, default: 100 },
+  userId: { type: String, unique: true, index: true },
   created: { type: Date, default: Date.now },
-  active: Boolean,
+  active: { type: Boolean, default: true },
+  achievement: [String],
 });
 
-export const ModelUser = mongoose.model<DocumentUser>('User', SchemaPost);
+export const ModelUser = mongoose.model<IDocumentUser>('User', SchemaUser);

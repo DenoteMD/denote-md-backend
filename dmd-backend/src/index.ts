@@ -4,16 +4,12 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { Mux } from './framework/mux';
 import logger from './helper/logger';
-import './mux/hello-world';
+import './middleware/middleware';
+import './mux/article';
 import Singleton from './helper/express';
 
 dotenv.config();
-const {
-  MONGO_CONNECT_STRING,
-  SERVICE_HOST,
-  SERVICE_PORT,
-  NODE_ENV,
-} = process.env;
+const { MONGO_CONNECT_STRING, SERVICE_HOST, SERVICE_PORT, NODE_ENV } = process.env;
 
 class AppMain {
   /**
@@ -21,16 +17,11 @@ class AppMain {
    * @static
    * @memberof AppMain
    */
-  public static connectMongo() {
-    if (MONGO_CONNECT_STRING) {
-      mongoose.connect(MONGO_CONNECT_STRING, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-    } else {
-      logger.error('Can not connect to mongodb');
-      process.exit(1);
-    }
+  public static async connectMongo() {
+    await mongoose.connect(MONGO_CONNECT_STRING as string, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
   }
 
   /**
@@ -42,7 +33,6 @@ class AppMain {
   private static startMaster() {
     // Fork child
     cluster.fork();
-    cluster.fork();
   }
 
   /**
@@ -53,18 +43,18 @@ class AppMain {
    * @param {number} port
    * @memberof AppMain
    */
-  private static startWorker(host: string, port: number) {
-    // AppMain.connectMongo();
+  private static async startWorker(host: string, port: number) {
+    await AppMain.connectMongo();
     const app = Singleton.getExpressInstance();
-    app.use(express.json());
+
+    if (NODE_ENV === 'development') {
+      app.use(function DebugMiddleWare(req: express.Request, _res: express.Response, next: Function) {
+        logger.debug(`Request to ${req.url} was handled by ${process.pid}`);
+        return next();
+      });
+    }
     Mux.init(NODE_ENV !== 'development');
-    logger.info(
-      'Service process online pid:',
-      process.pid,
-      'bind:',
-      host,
-      port,
-    );
+    logger.info('Service process online pid:', process.pid, 'bind:', host, port);
     app.listen(port, host);
   }
 

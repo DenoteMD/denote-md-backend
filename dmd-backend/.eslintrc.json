@@ -4,9 +4,7 @@
     "es6": true,
     "node": true
   },
-  "extends": [
-    "airbnb-base"
-  ],
+  "extends": ["airbnb-base", "prettier"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -14,12 +12,7 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   },
@@ -32,9 +25,7 @@
       "jsx": true
     }
   },
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "import/extensions": [
       "error",
@@ -46,9 +37,8 @@
         "tsx": "never"
       }
     ],
-    "class-methods-use-this": [
-      1
-    ],
+    "class-methods-use-this": [1],
+    "no-underscore-dangle": [0],
     "@typescript-eslint/no-unused-vars": [
       2,
       {

@@ -1,13 +1,11 @@
-
 import Transport from 'winston-transport';
 
-
-function getLevelLabel(level:string):string {
+function getLevelLabel(level: string): string {
   return ` ${level.toUpperCase()}${' '.repeat(8 - level.length)}`;
 }
 
 export class SyslogTransport extends Transport {
-  private syslogInstance: any
+  private syslogInstance: any;
 
   constructor(opts?: any) {
     super(opts);
@@ -15,7 +13,10 @@ export class SyslogTransport extends Transport {
   }
 
   log(info: any, callback: Function) {
-    this.syslogInstance.log(info.level, `${getLevelLabel(info.level)} ${info.message}`);
+    this.syslogInstance.log(
+      info.level,
+      `${getLevelLabel(info.level)} ${info.message}`,
+    );
     setImmediate(() => {
       this.emit('logged', info);
     });

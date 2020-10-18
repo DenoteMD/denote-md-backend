@@ -1,18 +1,20 @@
 import util from 'util';
-import winston, {
-  transports,
-  format,
-  Logger,
-} from 'winston';
+import winston, { transports, format, Logger } from 'winston';
 // @ts-ignore
 import syslog from 'modern-syslog';
 import chalk from 'chalk';
-import {
-  TransformableInfo,
-} from 'logform';
+import { TransformableInfo } from 'logform';
 import SyslogTransport from './transport';
 
-type LogLevelType = 'emerg'|'alert'|'crit'|'error'|'warning'|'notice'|'info'|'debug';
+type LogLevelType =
+  | 'emerg'
+  | 'alert'
+  | 'crit'
+  | 'error'
+  | 'warning'
+  | 'notice'
+  | 'info'
+  | 'debug';
 
 enum LogLevel {
   emerg = 0,
@@ -22,10 +24,10 @@ enum LogLevel {
   warning = 4,
   notice = 5,
   info = 6,
-  debug = 7
+  debug = 7,
 }
 
-export function colorByLevel(level:string, text:string):string {
+export function colorByLevel(level: string, text: string): string {
   const tmp = ` ${text.toUpperCase()}${' '.repeat(8 - text.length)}`;
   switch (level) {
     case 'emerg':
@@ -49,7 +51,7 @@ export function colorByLevel(level:string, text:string):string {
   }
 }
 
-export function colorMessageByLevel(level:string, text:string):string {
+export function colorMessageByLevel(level: string, text: string): string {
   switch (level) {
     case 'emerg':
       return chalk.gray(text);
@@ -84,66 +86,64 @@ function internalLog(params: any[]) {
   return tempStack.join(' ');
 }
 
-const {
-  timestamp,
-  combine,
-  printf,
-} = format;
+const { timestamp, combine, printf } = format;
 
 export class LoggerLoader {
-  private core: Logger
+  private core: Logger;
 
-  private level: LogLevel
+  private level: LogLevel;
 
   constructor(service: string, level: LogLevelType) {
     syslog.init(service);
     this.core = winston.createLogger({
       level,
       levels: winston.config.syslog.levels,
-      format: combine(timestamp(), printf((info: TransformableInfo) => `${
-        info.timestamp} ${
-        info.service} ${
-        colorByLevel(info.level, info.level)} ${
-        colorMessageByLevel(info.level, info.message)}`)),
+      format: combine(
+        timestamp(),
+        printf(
+          (info: TransformableInfo) =>
+            `${info.timestamp} ${info.service} ${colorByLevel(
+              info.level,
+              info.level,
+            )} ${colorMessageByLevel(info.level, info.message)}`,
+        ),
+      ),
       defaultMeta: { service },
-      transports: [
-        new transports.Console(),
-        new SyslogTransport({ syslog }),
-      ],
+      transports: [new transports.Console(), new SyslogTransport({ syslog })],
     });
     this.level = LogLevel[level];
     this.debug('Start new winston instance', 'service');
   }
 
-  public emerg(...params: any[]):void {
+  public emerg(...params: any[]): void {
     if (this.level >= LogLevel.emerg) this.core.emerg(internalLog(params));
   }
 
-  public alert(...params: any[]):void {
+  public alert(...params: any[]): void {
     if (this.level >= LogLevel.alert) this.core.alert(internalLog(params));
   }
 
-  public crit(...params: any[]):void {
+  public crit(...params: any[]): void {
     if (this.level >= LogLevel.crit) this.core.crit(internalLog(params));
   }
 
-  public error(...params: any[]):void {
+  public error(...params: any[]): void {
     if (this.level >= LogLevel.error) this.core.error(internalLog(params));
   }
 
-  public warning(...params: any[]):void {
+  public warning(...params: any[]): void {
     if (this.level >= LogLevel.warning) this.core.warning(internalLog(params));
   }
 
-  public notice(...params: any[]):void {
+  public notice(...params: any[]): void {
     if (this.level >= LogLevel.notice) this.core.notice(internalLog(params));
   }
 
-  public info(...params: any[]):void {
+  public info(...params: any[]): void {
     if (this.level >= LogLevel.info) this.core.info(internalLog(params));
   }
 
-  public debug(...params: any[]):void {
+  public debug(...params: any[]): void {
     if (this.level >= LogLevel.debug) this.core.debug(internalLog(params));
   }
 }
