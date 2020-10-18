@@ -1,50 +1,44 @@
-export interface ErrorInterface {
+export interface IError {
   message: string;
-  stack: string;
+  stack?: string;
 }
 
-export interface Ordering {
+export interface IOrdering {
   column: string;
-  order: RecordOrdering;
+  order: 'asc' | 'desc';
 }
 
-export enum RecordOrdering {
-  asc = 'asc',
-  desc = 'desc',
-}
-
-export interface Pagination {
+export interface IPagination {
   offset: number;
   limit: number;
-  order: Ordering[];
+  order: IOrdering[];
 }
 
-export interface RecordList {
+export interface IRecordList<T> extends IPagination {
   total: number;
-  offset: number;
-  order: Ordering[];
-  limit: number;
-  records: Record[];
+  records: T[];
 }
 
-export interface Record {
-  [key: string]: any;
-}
-
-export interface ResponseRecord {
+export interface IResponseRecord<T> {
   success: boolean;
   deprecated?: boolean;
-  result: Record;
+  result: T;
 }
 
-export interface ResponseList {
+export interface IResponseList<T> {
   success: boolean;
   deprecated?: boolean;
-  result: RecordList;
+  result: IRecordList<T>;
 }
 
-export interface ResponseError {
+export interface IResponseError {
   success: boolean;
   deprecated?: boolean;
-  result: ErrorInterface;
+  result: IError;
+}
+
+export interface IResponseCommon<T> {
+  success: boolean;
+  deprecated?: boolean;
+  result: IError | IRecordList<T> | T;
 }
