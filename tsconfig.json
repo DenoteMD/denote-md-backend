@@ -11,16 +11,8 @@
     "preserveConstEnums": true,
     "declaration": true,
     "outDir": "./built/",
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "include": [
-    "src/**/*.ts",
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    "**/*.json"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "**/*.json", "**/*.js"]
 }
