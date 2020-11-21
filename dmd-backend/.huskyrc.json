@@ -1,6 +1,0 @@
-{
-  "hooks": {
-    "commit-msg": "node husky.js message $HUSKY_GIT_PARAMS",
-    "pre-commit": "npm run-script lint"
-  }
-}
