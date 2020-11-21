@@ -9,7 +9,7 @@
   "main": "./built/index.js",
   "scripts": {
     "build": "tsc",
-    "release": "npm run fix && npm run build && npm run test && node ./devel.js",
+    "release": "npm run fix && npm run test && npm run build && node ./devel.js",
     "doc": "typedoc",
     "test": "echo \"Error: no test specified\" && exit 0",
     "mocha-test": "mocha -r ts-node/register tests/\\*\\*/\\*.spec.ts",
