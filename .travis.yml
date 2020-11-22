@@ -1,7 +1,10 @@
-sudo: false
+dist: xenial
+os: linux
 language: node_js
 before_install:
-  - npm install npm -g
 node_js:
   - '10'
-script: npm i --save-dev && npm run lint && npm run build
+script:
+  - npm i --save-dev
+  - npm run lint
+  - npm run build
