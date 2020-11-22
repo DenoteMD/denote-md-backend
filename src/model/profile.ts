@@ -10,7 +10,16 @@ export interface IDocumentProfile extends Document {
   uuid: String;
   firstName: String;
   lastName: String;
-  extraData: Array<Object>;
+  extraData: [Object];
+}
+
+export interface IProfile {
+  uuid: String;
+  firstName: String;
+  lastName: String;
+  extraData: {
+    [key: string]: string | number | string[] | number[];
+  };
 }
 
 export const SchemaProfile = new Schema({
