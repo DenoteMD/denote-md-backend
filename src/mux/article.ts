@@ -44,7 +44,17 @@ Mux.post<IArticle>(
       });
       return {
         success: true,
-        result: { uuid, tags, author, vote, comments, title, content, created, updated },
+        result: {
+          uuid,
+          tags,
+          author,
+          vote,
+          comments,
+          title,
+          content,
+          created,
+          updated,
+        },
       };
     }
     throw new Error('We are not able to save article');
