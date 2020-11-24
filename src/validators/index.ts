@@ -42,6 +42,8 @@ export const ArticleValidator = new Validator(
   },
 );
 
+export const CommentValidator = new Validator();
+
 export default {
   ArticleValidator,
   UuidValidator,
