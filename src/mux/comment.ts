@@ -8,14 +8,23 @@ Mux.get<[IComment]>(
   '/v1/comment/article/:articleUuid',
   UuidValidator,
   async (requestData: IRequestData): Promise<IResponseList<[IComment]>> => {
-    const { limit, offset, order } = requestData.body;
-    const foundComments = (await ModelComment.find({ articleId: requestData.params.uuid }).lean()) as [IComment];
+    const offset = requestData.body.offset > 1 ? requestData.body.offset - 1 : 0;
+    const limit = requestData.body.limit ? requestData.body.limit : 10;
+    const order = requestData.body.order ? requestData.body.order : [{ column: 'updated', order: 'asc' }];
+
+    const foundComments = (await ModelComment.find({ articleId: requestData.params.uuid })
+      .sort({ ...order })
+      .limit(limit)
+      .skip(offset * limit)
+      .lean()) as [IComment];
+
+    const totalComments = await ModelComment.find({ articleId: requestData.params.uuid }).countDocuments();
 
     if (foundComments.length > 0) {
       return {
         success: true,
         result: {
-          total: foundComments.length,
+          total: totalComments,
           limit,
           offset,
           order,
