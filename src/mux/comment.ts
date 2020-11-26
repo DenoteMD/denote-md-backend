@@ -1,9 +1,24 @@
-import Mux from '../framework/mux';
-import { IComment } from '../model/comment';
+import Mux, { IRequestData } from '../framework/mux';
+import { IResponseRecord } from '../framework/response';
+import { IComment, ModelComment } from '../model/comment';
 import { CommentValidator, UuidValidator } from '../validators';
 
 // Get all comments at root level in article for a given article's UUID
-Mux.get<[IComment]>('/v1/comment/article/:articleUuid', UuidValidator, async (): Promise<any> => {});
+Mux.get<[IComment]>(
+  '/v1/comment/article/:articleUuid',
+  UuidValidator,
+  async (requestData: IRequestData): Promise<IResponseRecord<[IComment]>> => {
+    const foundComments = (await ModelComment.find({ articleId: requestData.params.uuid }).lean()) as [IComment];
+
+    if (foundComments.length > 0) {
+      return {
+        success: true,
+        result: [...foundComments],
+      };
+    }
+    throw new Error("Can't find comment");
+  },
+);
 
 // Get all comments that's reply to a given comment UUID
 Mux.get<[IComment]>('/v1/comment/comment/:commentUuid', UuidValidator, async (): Promise<any> => {});
