@@ -1,5 +1,5 @@
 import Mux, { IRequestData } from '../framework/mux';
-import { IResponseRecord } from '../framework/response';
+import { IResponseList } from '../framework/response';
 import { IComment, ModelComment } from '../model/comment';
 import { CommentValidator, UuidValidator } from '../validators';
 
@@ -7,15 +7,23 @@ import { CommentValidator, UuidValidator } from '../validators';
 Mux.get<[IComment]>(
   '/v1/comment/article/:articleUuid',
   UuidValidator,
-  async (requestData: IRequestData): Promise<IResponseRecord<[IComment]>> => {
+  async (requestData: IRequestData): Promise<IResponseList<[IComment]>> => {
+    const { limit, offset, order } = requestData.body;
     const foundComments = (await ModelComment.find({ articleId: requestData.params.uuid }).lean()) as [IComment];
 
     if (foundComments.length > 0) {
       return {
         success: true,
-        result: [...foundComments],
+        result: {
+          total: foundComments.length,
+          limit,
+          offset,
+          order,
+          records: [foundComments],
+        },
       };
     }
+
     throw new Error("Can't find comment");
   },
 );
