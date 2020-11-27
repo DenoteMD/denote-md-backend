@@ -22,20 +22,16 @@ Mux.get<[IComment]>(
       .lean()) as [IComment];
     // Count total root comments in this article
     const totalComments = await ModelComment.find({ uuid: requestData.params.uuid, reply: undefined }).countDocuments();
-
-    if (foundComments.length > 0) {
-      return {
-        success: true,
-        result: {
-          total: totalComments,
-          limit,
-          offset,
-          order,
-          records: [foundComments],
-        },
-      };
-    }
-    throw new Error('Comment not found');
+    return {
+      success: true,
+      result: {
+        total: totalComments,
+        limit,
+        offset,
+        order,
+        records: [foundComments],
+      },
+    };
   },
 );
 
@@ -50,27 +46,35 @@ Mux.get<[IComment]>(
 
     const rootComment = await ModelComment.findOne({ uuid: requestData.params.commentUuid });
 
-    if (rootComment && rootComment.reply) {
+    if (rootComment) {
       const foundComments = (await ModelComment.find({ reply: rootComment._id })
         .sort({ ...order })
         .limit(limit)
         .skip(offset * limit)
         .lean()) as [IComment];
 
-      if (foundComments.length > 0) {
-        return {
-          success: true,
-          result: {
-            total: foundComments.length,
-            limit,
-            offset,
-            order,
-            records: [foundComments],
-          },
-        };
-      }
+      return {
+        success: true,
+        result: {
+          total: foundComments.length,
+          limit,
+          offset,
+          order,
+          records: [foundComments],
+        },
+      };
     }
-    throw new Error('Comment not found');
+    // Found no reply
+    return {
+      success: true,
+      result: {
+        total: 0,
+        limit,
+        offset,
+        order,
+        records: [],
+      },
+    };
   },
 );
 
