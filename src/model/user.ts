@@ -16,6 +16,7 @@ export interface IDocumentUser extends Document {
   active: Boolean;
   email: String;
   profileId: Schema.Types.ObjectId;
+  deviceId: Schema.Types.ObjectId[];
 }
 
 export const SchemaUser = new Schema({
@@ -29,6 +30,7 @@ export const SchemaUser = new Schema({
   achievement: [String],
   email: { type: String, unique: true, index: true },
   profileId: { type: Schema.Types.ObjectId, ref: 'Profile' },
+  deviceId: { type: [Schema.Types.ObjectId], ref: 'User' },
 });
 
 export const ModelUser = mongoose.model<IDocumentUser>('User', SchemaUser);
