@@ -1,7 +1,7 @@
 import express, { RequestHandler } from 'express';
 import { Validator } from './validator';
 import { IResponseCommon } from './response';
-import Singleton from '../helper/express';
+import { GetExpressInstance } from './express';
 
 export interface IRequestData {
   body: any;
@@ -14,7 +14,7 @@ export interface IMuxHandler<T> {
 }
 
 export class Mux {
-  private static expressApp: express.Express = Singleton.getExpressInstance();
+  private static expressApp: express.Express = GetExpressInstance();
 
   private static muxMap: any[] = [];
 

@@ -6,7 +6,7 @@ import { Mux } from './framework/mux';
 import logger from './helper/logger';
 import './middleware/middleware';
 import './mux/article';
-import Singleton from './helper/express';
+import { GetExpressInstance } from './framework/express';
 
 dotenv.config();
 const { MONGO_CONNECT_STRING, SERVICE_HOST, SERVICE_PORT, NODE_ENV } = process.env;
@@ -45,7 +45,7 @@ class AppMain {
    */
   private static async startWorker(host: string, port: number) {
     await AppMain.connectMongo();
-    const app = Singleton.getExpressInstance();
+    const app = GetExpressInstance();
 
     if (NODE_ENV === 'development') {
       app.use(function DebugMiddleWare(req: express.Request, _res: express.Response, next: Function) {
