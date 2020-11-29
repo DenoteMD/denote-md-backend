@@ -1,12 +1,14 @@
 # Denote MD back-end
 
-![Build status](https://travis-ci.org/DenoteMD/denote-md-backend.svg?branch=master) ![GitHub version](https://badge.fury.io/gh/DenoteMD%2Fdenote-md-backend.svg) ![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/DenoteMD/denote-md-backend) ![Closed Issues](https://img.shields.io/github/issues-closed-raw/DenoteMD/denote-md-backend)
+![Build status](https://travis-ci.org/DenoteMD/denote-md-backend.svg?branch=master) ![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/DenoteMD/denote-md-backend) ![Closed Issues](https://img.shields.io/github/issues-closed-raw/DenoteMD/denote-md-backend)
 
 Just a small piece for poor souls
 
 ## Requirement
 
-Make sure `Node.js >= v10.23.0`
+Make sure your `Node.js` is `v10.23.0`
+
+Read this guideline before you begin [Development Guideline](https://github.com/DenoteMD/denote-md-backend/wiki/Development-Guideline)
 
 ## Installation
 
@@ -42,7 +44,6 @@ Please make sure you get no error from run this
 
 ```text
 npm run check
-
 ```
 
 ## License
