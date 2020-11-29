@@ -30,10 +30,10 @@ export const SchemaDevice = new Schema({
   uuid: { type: String, default: uuidv4(), unique: true, index: true },
   userId: { type: Schema.Types.ObjectId, ref: 'User' },
   deviceId: { type: Schema.Types.ObjectId, ref: 'Device' },
-  challengeKey: { type: String, unique: true, select: false },
-  sessionKeyId: { type: String, unique: true },
-  created: Date,
+  challengeKey: { type: String, unique: true },
+  sessionKeyId: { type: String },
+  created: { type: Date, default: Date.now },
   expiredDate: Date,
 });
 
-export const ModelProfile = mongoose.model<IDocumentSession>('Session', SchemaDevice);
+export const ModelSession = mongoose.model<IDocumentSession>('Session', SchemaDevice);

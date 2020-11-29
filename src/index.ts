@@ -2,11 +2,14 @@ import express from 'express';
 import cluster from 'cluster';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import { Buffer } from 'safe-buffer';
+import DenoteUserIdentity from 'denote-ui';
 import { Mux } from './framework/mux';
 import logger from './helper/logger';
 import './middleware/middleware';
 import './mux/article';
-import Singleton from './helper/express';
+import { GetExpressInstance } from './framework/express';
+import { CoreAuthenticator } from './core/authenticator';
 
 dotenv.config();
 const { MONGO_CONNECT_STRING, SERVICE_HOST, SERVICE_PORT, NODE_ENV } = process.env;
@@ -45,8 +48,14 @@ class AppMain {
    */
   private static async startWorker(host: string, port: number) {
     await AppMain.connectMongo();
-    const app = Singleton.getExpressInstance();
-
+    const app = GetExpressInstance();
+    // await CoreAuthenticator.generateChallengeByUserEmail('chiro8x@gmail.com');
+    const user = DenoteUserIdentity.fromMnemonic(
+      'jump dirt foam license journey imitate forum orient hard miracle task castle',
+    );
+    CoreAuthenticator.verifySignedProof(
+      user.sign(Buffer.from('db0a8ec14b7f2dd77ee3f263fcd977bc2931d3bbfb8f8182b6d8a53345e1e7af', 'hex')).toString('hex'),
+    );
     if (NODE_ENV === 'development') {
       app.use(function DebugMiddleWare(req: express.Request, _res: express.Response, next: Function) {
         logger.debug(`Request to ${req.url} was handled by ${process.pid}`);
