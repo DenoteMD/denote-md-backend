@@ -206,7 +206,57 @@ Mux.post<IComment>(
 );
 
 // Edit comment in article
-Mux.put<IComment>('/v1/comment/:commentUuid', CommentValidator, async (): Promise<any> => {});
+Mux.put<IComment>(
+  '/v1/comment/:commentUuid',
+  CommentValidator,
+  async (requestData: IRequestData, req?: express.Request): Promise<IResponseRecord<IComment>> => {
+    const { commentUuid } = requestData.params;
+    if (req) {
+      // Get userId from header
+      const userId = req.header('X-Denote-User-Identity');
+      // Find is user existing
+      const user = await ModelUser.findOne({ userId });
+      const comment = await ModelComment.findOne({ uuid: commentUuid });
+      if (comment && user) {
+        if (comment.author === user._id) {
+          const savedComment = await ModelComment.findOneAndUpdate(
+            { uuid: commentUuid, author: user._id },
+            { ...requestData.body },
+          );
+          if (savedComment) {
+            const { uuid, author, reply, votedUser, content, created, updated, hidden, vote } = savedComment.toObject({
+              transform: (_doc: any, ret: any) => {
+                const keys = Object.keys(ret);
+                for (let i = 0; i < keys.length; i += 1) {
+                  const key = keys[i];
+                  if (key.indexOf('_') === 0) {
+                    // eslint-disable-next-line no-param-reassign
+                    delete ret[key];
+                  }
+                }
+              },
+            });
+            return {
+              success: true,
+              result: {
+                uuid,
+                author,
+                reply,
+                votedUser,
+                content,
+                created,
+                updated,
+                hidden,
+                vote,
+              },
+            };
+          }
+        }
+      }
+    }
+    throw new Error('We are not able to save comment');
+  },
+);
 
 // Delete a comment
 Mux.delete<IComment>('/v1/comment/:commentUuid', UuidValidator, async (): Promise<any> => {});
