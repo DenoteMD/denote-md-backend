@@ -295,4 +295,60 @@ Mux.put<IComment>(
 );
 
 // Delete a comment
-Mux.delete<IComment>('/v1/comment/:commentUuid', UuidValidator, async (): Promise<any> => {});
+Mux.delete<IComment>(
+  '/v1/comment/:commentUuid',
+  UuidValidator,
+  async (requestData: IRequestData, req?: express.Request): Promise<IResponseRecord<IComment>> => {
+    const { commentUuid } = requestData.params;
+    if (req) {
+      // Get userId from header
+      const userId = req.header('X-Denote-User-Identity');
+      // Find is user existing
+      const user = await ModelUser.findOne({ userId });
+      if (user) {
+        const deletedComment = await ModelComment.findOneAndDelete({ uuid: commentUuid, author: user._id });
+        if (deletedComment) {
+          const {
+            uuid,
+            author,
+            articleId,
+            reply,
+            votedUser,
+            content,
+            created,
+            updated,
+            hidden,
+            vote,
+          } = deletedComment.toObject({
+            transform: (_doc: any, ret: any) => {
+              const keys = Object.keys(ret);
+              for (let i = 0; i < keys.length; i += 1) {
+                const key = keys[i];
+                if (key.indexOf('_') === 0) {
+                  // eslint-disable-next-line no-param-reassign
+                  delete ret[key];
+                }
+              }
+            },
+          });
+          return {
+            success: true,
+            result: {
+              uuid,
+              author,
+              articleId,
+              reply,
+              votedUser,
+              content,
+              created,
+              updated,
+              hidden,
+              vote,
+            },
+          };
+        }
+      }
+    }
+    throw new Error('We are not able to delete comment');
+  },
+);
