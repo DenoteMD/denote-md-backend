@@ -28,6 +28,7 @@ export interface IDocumentComment extends Document {
 export interface IComment {
   uuid: string;
   author: Schema.Types.ObjectId;
+  articleId: Schema.Types.ObjectId;
   // If reply isn't set that meant this comment, is in the root of comment section
   reply?: Schema.Types.ObjectId;
   // We need to record whom had voted

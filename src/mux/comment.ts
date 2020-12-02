@@ -108,7 +108,18 @@ Mux.post<IComment>(
       const result = await imComment.save();
       const savedComment = await ModelComment.findById(result._id).populate(['author', 'articleId']);
       if (savedComment) {
-        const { uuid, author, reply, votedUser, content, created, updated, hidden, vote } = savedComment.toObject({
+        const {
+          uuid,
+          author,
+          articleId,
+          reply,
+          votedUser,
+          content,
+          created,
+          updated,
+          hidden,
+          vote,
+        } = savedComment.toObject({
           transform: (_doc: any, ret: any) => {
             const keys = Object.keys(ret);
             for (let i = 0; i < keys.length; i += 1) {
@@ -125,6 +136,7 @@ Mux.post<IComment>(
           result: {
             uuid,
             author,
+            articleId,
             reply,
             votedUser,
             content,
@@ -173,7 +185,18 @@ Mux.post<IComment>(
 
       const savedReply = await ModelComment.findById(result._id);
       if (savedReply) {
-        const { uuid, author, reply, votedUser, content, created, updated, hidden, vote } = savedReply.toObject({
+        const {
+          uuid,
+          author,
+          articleId,
+          reply,
+          votedUser,
+          content,
+          created,
+          updated,
+          hidden,
+          vote,
+        } = savedReply.toObject({
           transform: (_doc: any, ret: any) => {
             const keys = Object.keys(ret);
             for (let i = 0; i < keys.length; i += 1) {
@@ -190,6 +213,7 @@ Mux.post<IComment>(
           result: {
             uuid,
             author,
+            articleId,
             reply,
             votedUser,
             content,
@@ -224,7 +248,18 @@ Mux.put<IComment>(
             { ...requestData.body },
           );
           if (savedComment) {
-            const { uuid, author, reply, votedUser, content, created, updated, hidden, vote } = savedComment.toObject({
+            const {
+              uuid,
+              author,
+              articleId,
+              reply,
+              votedUser,
+              content,
+              created,
+              updated,
+              hidden,
+              vote,
+            } = savedComment.toObject({
               transform: (_doc: any, ret: any) => {
                 const keys = Object.keys(ret);
                 for (let i = 0; i < keys.length; i += 1) {
@@ -240,6 +275,7 @@ Mux.put<IComment>(
               success: true,
               result: {
                 uuid,
+                articleId,
                 author,
                 reply,
                 votedUser,
