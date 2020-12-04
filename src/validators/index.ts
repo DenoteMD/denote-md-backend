@@ -5,7 +5,7 @@ const titleLength = 255;
 const bodyLength = 1048576;
 
 export const UuidValidator = new Validator({
-  name: 'uuid',
+  name: 'uuid' || 'commentUuid' || 'articleUuid',
   location: 'params',
   type: 'string',
   require: true,
@@ -42,7 +42,15 @@ export const ArticleValidator = new Validator(
   },
 );
 
-export const CommentValidator = new Validator();
+export const CommentValidator = new Validator({
+  name: 'content',
+  location: 'body',
+  type: 'string',
+  require: true,
+  validator: (v: string) => v.length < bodyLength,
+  postProcess: (v: string) => filterXSS(v),
+  message: `Body should contain less than ${bodyLength}`,
+});
 
 export default {
   ArticleValidator,
