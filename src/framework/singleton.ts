@@ -3,12 +3,12 @@ const instanceCache: { [key: string]: any } = {};
 
 export function Singleton<T>(
   instanceName: string,
-  Constuctor: new (...params: any[]) => T,
+  Constructor: new (...params: any[]) => T,
   ...constructorParams: any[]
 ): T {
-  if (typeof instanceCache[instanceName] !== 'undefined') {
+  if (typeof instanceCache[instanceName] === 'undefined') {
     // Construct new instance with given params
-    instanceCache[instanceName] = new Constuctor(...constructorParams);
+    instanceCache[instanceName] = new Constructor(...constructorParams);
   }
   return instanceCache[instanceName];
 }
