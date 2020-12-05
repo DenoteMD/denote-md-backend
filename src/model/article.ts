@@ -11,6 +11,7 @@ export interface IDocumentArticle extends Document {
   uuid: String;
   title: String;
   author: Schema.Types.ObjectId;
+  comments: Schema.Types.ObjectId[];
   content: String;
   tags: String[];
   created: Date;
@@ -45,9 +46,8 @@ export const SchemaArticle = new Schema({
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
 });
 
-SchemaArticle.pre<IDocumentArticle>('save', function prevSavePost(next: mongoose.HookNextFunction) {
+SchemaArticle.pre<IDocumentArticle>('save', async function preSaveArticle() {
   this.updated = new Date();
-  next();
 });
 
 export const ModelArticle = mongoose.model<IDocumentArticle>('Article', SchemaArticle);

@@ -10,23 +10,21 @@ export interface IDocumentProfile extends Document {
   uuid: String;
   firstName: String;
   lastName: String;
-  extraData: [Object];
+  extraData: Map<string, string>;
 }
 
 export interface IProfile {
   uuid: String;
   firstName: String;
   lastName: String;
-  extraData: {
-    [key: string]: string | number | string[] | number[];
-  };
+  extraData: Map<string, string>;
 }
 
 export const SchemaProfile = new Schema({
   uuid: { type: String, default: uuidv4(), unique: true, index: true },
   firstName: String,
   lastName: String,
-  extraData: [Object],
+  extraData: Map,
 });
 
 export const ModelProfile = mongoose.model<IDocumentProfile>('Profile', SchemaProfile);

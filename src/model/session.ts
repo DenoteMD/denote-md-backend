@@ -8,32 +8,35 @@ import { v4 as uuidv4 } from 'uuid';
  */
 export interface IDocumentSession extends Document {
   uuid: String;
-  userId: Schema.Types.ObjectId;
-  deviceId: Schema.Types.ObjectId;
+  user: Schema.Types.ObjectId;
+  device: Schema.Types.ObjectId;
   challengeKey: String;
   sessionKeyId: String;
+  data: Map<string, any>;
   created: Date;
   expiredDate: Date;
 }
 
 export interface ISession {
   uuid: string;
-  userId: Schema.Types.ObjectId;
-  deviceId: Schema.Types.ObjectId;
+  user: Schema.Types.ObjectId;
+  device: Schema.Types.ObjectId;
   challengeKey: string;
   sessionKeyId: string;
+  data: Map<string, any>;
   created: Date;
   expiredDate: Date;
 }
 
-export const SchemaDevice = new Schema({
+export const SchemaSession = new Schema({
   uuid: { type: String, default: uuidv4(), unique: true, index: true },
-  userId: { type: Schema.Types.ObjectId, ref: 'User' },
-  deviceId: { type: Schema.Types.ObjectId, ref: 'Device' },
-  challengeKey: { type: String, unique: true },
-  sessionKeyId: { type: String },
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  device: { type: Schema.Types.ObjectId, ref: 'Device' },
+  challengeKey: { type: String, unique: true, index: true },
+  sessionKeyId: { type: String, unique: true, index: true },
   created: { type: Date, default: Date.now },
+  data: Map,
   expiredDate: Date,
 });
 
-export const ModelSession = mongoose.model<IDocumentSession>('Session', SchemaDevice);
+export const ModelSession = mongoose.model<IDocumentSession>('Session', SchemaSession);

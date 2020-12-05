@@ -30,7 +30,7 @@ Mux.post<IArticle>(
     const result = await imArticle.save();
     const savedArticle = await ModelArticle.findById(result._id).populate('author');
     if (savedArticle) {
-      const { uuid, tags, author, vote, comments, title, content, created, updated } = savedArticle.toObject({
+      const { uuid, tags, author, vote, comments, title, content, created, updated } = <IArticle>savedArticle.toObject({
         transform: (_doc: any, ret: any) => {
           const keys = Object.keys(ret);
           for (let i = 0; i < keys.length; i += 1) {
@@ -67,7 +67,7 @@ Mux.get<IArticle>(
   async (requestData: IRequestData): Promise<IResponseRecord<IArticle>> => {
     const foundArticle = await ModelArticle.findOne({ uuid: requestData.params.uuid }).populate('author');
     if (foundArticle) {
-      const { uuid, tags, author, vote, comments, title, content, created, updated } = foundArticle.toObject({
+      const { uuid, tags, author, vote, comments, title, content, created, updated } = <IArticle>foundArticle.toObject({
         transform: (_doc: any, ret: any) => {
           const keys = Object.keys(ret);
           for (let i = 0; i < keys.length; i += 1) {
