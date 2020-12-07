@@ -1,15 +1,13 @@
-import express from 'express';
 import cluster from 'cluster';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import { Buffer } from 'safe-buffer';
-import DenoteUserIdentity from 'denote-ui';
 import { Mux } from './framework/mux';
 import logger from './helper/logger';
-import './middleware/middleware';
+import './middleware';
 import './mux/article';
+import './mux/echo';
 import { GetExpressInstance } from './framework/express';
-import { CoreAuthenticator } from './core/authenticator';
+import FrameworkEvent from './framework/event';
 
 dotenv.config();
 const { MONGO_CONNECT_STRING, SERVICE_HOST, SERVICE_PORT, NODE_ENV } = process.env;
@@ -49,19 +47,6 @@ class AppMain {
   private static async startWorker(host: string, port: number) {
     await AppMain.connectMongo();
     const app = GetExpressInstance();
-    // await CoreAuthenticator.generateChallengeByUserEmail('chiro8x@gmail.com');
-    const user = DenoteUserIdentity.fromMnemonic(
-      'jump dirt foam license journey imitate forum orient hard miracle task castle',
-    );
-    CoreAuthenticator.verifySignedProof(
-      user.sign(Buffer.from('db0a8ec14b7f2dd77ee3f263fcd977bc2931d3bbfb8f8182b6d8a53345e1e7af', 'hex')).toString('hex'),
-    );
-    if (NODE_ENV === 'development') {
-      app.use(function DebugMiddleWare(req: express.Request, _res: express.Response, next: Function) {
-        logger.debug(`Request to ${req.url} was handled by ${process.pid}`);
-        return next();
-      });
-    }
     Mux.init(NODE_ENV !== 'development');
     logger.info('Service process online pid:', process.pid, 'bind:', host, port);
     app.listen(port, host);
@@ -72,6 +57,9 @@ class AppMain {
    * @memberof AppMain
    */
   public static start() {
+    FrameworkEvent.on('error', (err: Error) => {
+      logger.error(err);
+    });
     if (cluster.isMaster) {
       logger.info('Master process online pid:', process.pid);
       AppMain.startMaster();
