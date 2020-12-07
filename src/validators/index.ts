@@ -48,7 +48,6 @@ export const CommentValidator = new Validator({
   type: 'string',
   require: true,
   validator: (v: string) => v.length < bodyLength,
-  postProcess: (v: string) => filterXSS(v),
   message: `Body should contain less than ${bodyLength}`,
 });
 

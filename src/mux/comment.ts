@@ -102,16 +102,16 @@ Mux.post<IComment>(
       }
     }
 
-    const article = await ModelArticle.findOne({ uuid: articleUuid });
-    if (article) {
-      imComment.articleId = article._id;
+    const foundArticle = await ModelArticle.findOne({ uuid: articleUuid });
+    if (foundArticle) {
+      imComment.article = foundArticle._id;
       const result = await imComment.save();
       const savedComment = await ModelComment.findById(result._id).populate(['author', 'articleId']);
       if (savedComment) {
         const {
           uuid,
           author,
-          articleId,
+          article,
           reply,
           votedUser,
           content,
@@ -136,7 +136,7 @@ Mux.post<IComment>(
           result: {
             uuid,
             author,
-            articleId,
+            article,
             reply,
             votedUser,
             content,
@@ -164,7 +164,7 @@ Mux.post<IComment>(
       // Get userId from header
       const userId = req.header('X-Denote-User-Identity');
       // Find article and comment in db base on articleUuid and commentUuid
-      const article = await ModelArticle.findOne({ uuid: articleUuid });
+      const foundArticle = await ModelArticle.findOne({ uuid: articleUuid });
       const comment = await ModelComment.findOne({ uuid: commentUuid });
       // Find is user existing
       const user = await ModelUser.findOne({ userId });
@@ -177,9 +177,9 @@ Mux.post<IComment>(
         const savedUser = await imUser.save();
         replyComment.author = savedUser._id;
       }
-      if (comment && article) {
+      if (comment && foundArticle) {
         replyComment.reply = comment._id;
-        replyComment.articleId = article._id;
+        replyComment.article = foundArticle._id;
       }
       const result = await replyComment.save();
 
@@ -188,7 +188,7 @@ Mux.post<IComment>(
         const {
           uuid,
           author,
-          articleId,
+          article,
           reply,
           votedUser,
           content,
@@ -213,7 +213,7 @@ Mux.post<IComment>(
           result: {
             uuid,
             author,
-            articleId,
+            article,
             reply,
             votedUser,
             content,
@@ -251,7 +251,7 @@ Mux.put<IComment>(
             const {
               uuid,
               author,
-              articleId,
+              article,
               reply,
               votedUser,
               content,
@@ -275,7 +275,7 @@ Mux.put<IComment>(
               success: true,
               result: {
                 uuid,
-                articleId,
+                article,
                 author,
                 reply,
                 votedUser,
@@ -311,7 +311,7 @@ Mux.delete<IComment>(
           const {
             uuid,
             author,
-            articleId,
+            article,
             reply,
             votedUser,
             content,
@@ -336,7 +336,7 @@ Mux.delete<IComment>(
             result: {
               uuid,
               author,
-              articleId,
+              article,
               reply,
               votedUser,
               content,
