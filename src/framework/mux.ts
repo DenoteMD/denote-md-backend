@@ -2,6 +2,8 @@ import express, { RequestHandler } from 'express';
 import { Validator } from './validator';
 import { IResponseCommon } from './response';
 import { GetExpressInstance } from './express';
+import { IDocumentSession } from '../model/session';
+import FrameworkEvent from './event';
 
 export interface IRequestData {
   body: any;
@@ -9,8 +11,16 @@ export interface IRequestData {
   params: any;
 }
 
+export type TDenoteSession = IDocumentSession | null;
+
+export interface IMuxRequest extends express.Request {
+  session?: TDenoteSession;
+}
+
+export interface IMuxResponse extends express.Response {}
+
 export interface IMuxHandler<T> {
-  (requestData: IRequestData, req?: express.Request): Promise<IResponseCommon<T>>;
+  (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseCommon<T>>;
 }
 
 export class Mux {
@@ -75,7 +85,7 @@ export class Mux {
     validator: Validator | undefined,
     handler: IMuxHandler<T>,
   ) {
-    (Mux.expressApp as any)[methodName](url, async (req: express.Request, res: express.Response) => {
+    (Mux.expressApp as any)[methodName](url, async (req: IMuxRequest, res: IMuxResponse) => {
       let responseResult = null;
       try {
         let verifiedRequestData;
@@ -92,6 +102,7 @@ export class Mux {
         responseResult = res.status(200).send(result);
       } catch (raisedError) {
         if (raisedError instanceof Error) {
+          FrameworkEvent.emit('error', raisedError);
           responseResult = res.status(500).send({
             success: false,
             result: {

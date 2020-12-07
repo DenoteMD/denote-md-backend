@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 export interface IDocumentComment extends Document {
   uuid: String;
   author: Schema.Types.ObjectId;
-  articleId: Schema.Types.ObjectId;
+  article: Schema.Types.ObjectId;
   reply: Schema.Types.ObjectId;
   votedUser: Schema.Types.ObjectId[];
   content: String;
@@ -28,7 +28,7 @@ export interface IDocumentComment extends Document {
 export interface IComment {
   uuid: string;
   author: Schema.Types.ObjectId;
-  articleId: Schema.Types.ObjectId;
+  article: Schema.Types.ObjectId;
   // If reply isn't set that meant this comment, is in the root of comment section
   reply?: Schema.Types.ObjectId;
   // We need to record whom had voted
@@ -44,7 +44,7 @@ export interface IComment {
 export const SchemaComment = new Schema({
   uuid: { type: String, default: uuidv4(), unique: true, index: true },
   author: { type: Schema.Types.ObjectId, ref: 'User' },
-  articleId: { type: Schema.Types.ObjectId, ref: 'Article' },
+  article: { type: Schema.Types.ObjectId, ref: 'Article' },
   reply: { type: Schema.Types.ObjectId, ref: 'Comment' },
   votedUser: { type: [Schema.Types.ObjectId], ref: 'User' },
   content: String,
@@ -54,9 +54,8 @@ export const SchemaComment = new Schema({
   vote: { type: Number, default: 0 },
 });
 
-SchemaComment.pre<IDocumentComment>('save', function prevSavePost(next: mongoose.HookNextFunction) {
+SchemaComment.pre<IDocumentComment>('save', async function prevSaveComment() {
   this.updated = new Date();
-  next();
 });
 
 export const ModelComment = mongoose.model<IDocumentComment>('Comment', SchemaComment);

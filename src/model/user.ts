@@ -8,8 +8,8 @@ import { v4 as uuidv4 } from 'uuid';
  * @extends {Document}
  */
 export interface IDocumentUser extends Document {
-  profileId: Schema.Types.ObjectId;
-  deviceId: Schema.Types.ObjectId[];
+  profile: Schema.Types.ObjectId;
+  device: Schema.Types.ObjectId[];
   uuid: String;
   alias: String;
   status: String;
@@ -20,8 +20,8 @@ export interface IDocumentUser extends Document {
 }
 
 export interface IUser {
-  profileId: Schema.Types.ObjectId;
-  deviceId: Schema.Types.ObjectId[];
+  profile: Schema.Types.ObjectId;
+  device: Schema.Types.ObjectId[];
   uuid: string;
   alias: string;
   status: string;
@@ -32,8 +32,8 @@ export interface IUser {
 }
 
 export const SchemaUser = new Schema({
-  profileId: { type: Schema.Types.ObjectId, ref: 'Profile' },
-  deviceId: { type: [Schema.Types.ObjectId], ref: 'User' },
+  profile: { type: Schema.Types.ObjectId, ref: 'Profile' },
+  device: { type: [Schema.Types.ObjectId], ref: 'User' },
   uuid: { type: String, default: uuidv4(), unique: true, index: true },
   alias: { type: String, unique: true, index: true },
   status: String,
