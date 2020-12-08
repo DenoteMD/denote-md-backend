@@ -1,5 +1,4 @@
-import express from 'express';
-import Mux, { IRequestData } from '../framework/mux';
+import Mux, { IRequestData, IMuxRequest } from '../framework/mux';
 import { IResponseList, IResponseRecord } from '../framework/response';
 import { ModelArticle } from '../model/article';
 import { IComment, ModelComment } from '../model/comment';
@@ -82,23 +81,15 @@ Mux.get<[IComment]>(
 Mux.post<IComment>(
   '/v1/comment/article/:articleUuid',
   CommentValidator,
-  async (requestData: IRequestData, req?: express.Request): Promise<IResponseRecord<IComment>> => {
+  async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
     const { articleUuid } = requestData.params;
     const imComment = new ModelComment(requestData.body);
     // If req is defined
-    if (req) {
-      // Get userId from header
-      const userId = req.header('X-Denote-User-Identity');
-      // Find is user existing
-      const user = await ModelUser.findOne({ userId });
+    if (req && req.session) {
+      // Find user from current session
+      const user = await ModelUser.findById(req.session.user).exec();
       if (user) {
         imComment.author = user._id;
-      } else {
-        const imUser = new ModelUser({
-          userId,
-        });
-        const savedUser = await imUser.save();
-        imComment.author = savedUser._id;
       }
     }
 
@@ -106,7 +97,7 @@ Mux.post<IComment>(
     if (foundArticle) {
       imComment.article = foundArticle._id;
       const result = await imComment.save();
-      const savedComment = await ModelComment.findById(result._id).populate(['author', 'articleId']);
+      const savedComment = await ModelComment.findById(result._id).populate(['author', 'article']);
       if (savedComment) {
         const {
           uuid,
@@ -145,26 +136,17 @@ Mux.post<IComment>(
 Mux.post<IComment>(
   '/v1/comment/:commentUuid/article/:articleUuid',
   CommentValidator,
-  async (requestData: IRequestData, req?: express.Request): Promise<IResponseRecord<IComment>> => {
+  async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
     const { commentUuid, articleUuid } = requestData.params;
     const replyComment = new ModelComment(requestData.body);
 
-    if (req) {
-      // Get userId from header
-      const userId = req.header('X-Denote-User-Identity');
-      // Find article and comment in db base on articleUuid and commentUuid
+    if (req && req.session) {
       const foundArticle = await ModelArticle.findOne({ uuid: articleUuid });
       const comment = await ModelComment.findOne({ uuid: commentUuid });
-      // Find is user existing
-      const user = await ModelUser.findOne({ userId });
+      // Find user from current session
+      const user = await ModelUser.findById(req.session.user);
       if (user) {
         replyComment.author = user._id;
-      } else {
-        const imUser = new ModelUser({
-          userId,
-        });
-        const savedUser = await imUser.save();
-        replyComment.author = savedUser._id;
       }
       if (comment && foundArticle) {
         replyComment.reply = comment._id;
@@ -211,13 +193,11 @@ Mux.post<IComment>(
 Mux.put<IComment>(
   '/v1/comment/:commentUuid',
   CommentValidator,
-  async (requestData: IRequestData, req?: express.Request): Promise<IResponseRecord<IComment>> => {
+  async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
     const { commentUuid } = requestData.params;
-    if (req) {
-      // Get userId from header
-      const userId = req.header('X-Denote-User-Identity');
-      // Find is user existing
-      const user = await ModelUser.findOne({ userId });
+    if (req && req.session) {
+      // Find user from current session
+      const user = await ModelUser.findById(req.session.user);
       const comment = await ModelComment.findOne({ uuid: commentUuid });
       if (comment && user) {
         if (comment.author === user._id) {
@@ -265,13 +245,11 @@ Mux.put<IComment>(
 Mux.delete<IComment>(
   '/v1/comment/:commentUuid',
   UuidValidator,
-  async (requestData: IRequestData, req?: express.Request): Promise<IResponseRecord<IComment>> => {
+  async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
     const { commentUuid } = requestData.params;
-    if (req) {
-      // Get userId from header
-      const userId = req.header('X-Denote-User-Identity');
-      // Find is user existing
-      const user = await ModelUser.findOne({ userId });
+    if (req && req.session) {
+      // Find user from current session
+      const user = await ModelUser.findById(req.session.user);
       if (user) {
         const deletedComment = await ModelComment.findOneAndDelete({ uuid: commentUuid, author: user._id });
         if (deletedComment) {
