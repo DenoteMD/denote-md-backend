@@ -119,18 +119,7 @@ Mux.post<IComment>(
           updated,
           hidden,
           vote,
-        } = savedComment.toObject({
-          transform: (_doc: any, ret: any) => {
-            const keys = Object.keys(ret);
-            for (let i = 0; i < keys.length; i += 1) {
-              const key = keys[i];
-              if (key.indexOf('_') === 0) {
-                // eslint-disable-next-line no-param-reassign
-                delete ret[key];
-              }
-            }
-          },
-        });
+        } = savedComment.toObject();
         return {
           success: true,
           result: {
@@ -196,18 +185,7 @@ Mux.post<IComment>(
           updated,
           hidden,
           vote,
-        } = savedReply.toObject({
-          transform: (_doc: any, ret: any) => {
-            const keys = Object.keys(ret);
-            for (let i = 0; i < keys.length; i += 1) {
-              const key = keys[i];
-              if (key.indexOf('_') === 0) {
-                // eslint-disable-next-line no-param-reassign
-                delete ret[key];
-              }
-            }
-          },
-        });
+        } = savedReply.toObject();
         return {
           success: true,
           result: {
@@ -259,18 +237,7 @@ Mux.put<IComment>(
               updated,
               hidden,
               vote,
-            } = savedComment.toObject({
-              transform: (_doc: any, ret: any) => {
-                const keys = Object.keys(ret);
-                for (let i = 0; i < keys.length; i += 1) {
-                  const key = keys[i];
-                  if (key.indexOf('_') === 0) {
-                    // eslint-disable-next-line no-param-reassign
-                    delete ret[key];
-                  }
-                }
-              },
-            });
+            } = savedComment.toObject();
             return {
               success: true,
               result: {
@@ -319,18 +286,7 @@ Mux.delete<IComment>(
             updated,
             hidden,
             vote,
-          } = deletedComment.toObject({
-            transform: (_doc: any, ret: any) => {
-              const keys = Object.keys(ret);
-              for (let i = 0; i < keys.length; i += 1) {
-                const key = keys[i];
-                if (key.indexOf('_') === 0) {
-                  // eslint-disable-next-line no-param-reassign
-                  delete ret[key];
-                }
-              }
-            },
-          });
+          } = deletedComment.toObject();
           return {
             success: true,
             result: {
