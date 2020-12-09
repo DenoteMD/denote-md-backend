@@ -99,18 +99,9 @@ Mux.post<IComment>(
       const result = await imComment.save();
       const savedComment = await ModelComment.findById(result._id).populate(['author', 'article']);
       if (savedComment) {
-        const {
-          uuid,
-          author,
-          article,
-          reply,
-          votedUser,
-          content,
-          created,
-          updated,
-          hidden,
-          vote,
-        } = savedComment.toObject();
+        const { uuid, author, article, reply, votedUser, content, created, updated, hidden, vote } = <IComment>(
+          savedComment.toObject()
+        );
         return {
           success: true,
           result: {
@@ -156,18 +147,9 @@ Mux.post<IComment>(
 
       const savedReply = await ModelComment.findById(result._id);
       if (savedReply) {
-        const {
-          uuid,
-          author,
-          article,
-          reply,
-          votedUser,
-          content,
-          created,
-          updated,
-          hidden,
-          vote,
-        } = savedReply.toObject();
+        const { uuid, author, article, reply, votedUser, content, created, updated, hidden, vote } = <IComment>(
+          savedReply.toObject()
+        );
         return {
           success: true,
           result: {
@@ -206,18 +188,9 @@ Mux.put<IComment>(
             { ...requestData.body },
           );
           if (savedComment) {
-            const {
-              uuid,
-              author,
-              article,
-              reply,
-              votedUser,
-              content,
-              created,
-              updated,
-              hidden,
-              vote,
-            } = savedComment.toObject();
+            const { uuid, author, article, reply, votedUser, content, created, updated, hidden, vote } = <IComment>(
+              savedComment.toObject()
+            );
             return {
               success: true,
               result: {
@@ -253,18 +226,9 @@ Mux.delete<IComment>(
       if (user) {
         const deletedComment = await ModelComment.findOneAndDelete({ uuid: commentUuid, author: user._id });
         if (deletedComment) {
-          const {
-            uuid,
-            author,
-            article,
-            reply,
-            votedUser,
-            content,
-            created,
-            updated,
-            hidden,
-            vote,
-          } = deletedComment.toObject();
+          const { uuid, author, article, reply, votedUser, content, created, updated, hidden, vote } = <IComment>(
+            deletedComment.toObject()
+          );
           return {
             success: true,
             result: {
