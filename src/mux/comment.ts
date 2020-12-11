@@ -99,22 +99,11 @@ Mux.post<IComment>(
       const result = await imComment.save();
       const savedComment = await ModelComment.findById(result._id).populate(['author', 'article']);
       if (savedComment) {
-        const { uuid, author, article, reply, votedUser, content, created, updated, hidden, vote } = <IComment>(
-          savedComment.toObject()
-        );
+        const responseComment = <IComment>savedComment.toObject();
         return {
           success: true,
           result: {
-            uuid,
-            author,
-            article,
-            reply,
-            votedUser,
-            content,
-            created,
-            updated,
-            hidden,
-            vote,
+            ...responseComment,
           },
         };
       }
@@ -147,22 +136,11 @@ Mux.post<IComment>(
 
       const savedReply = await ModelComment.findById(result._id);
       if (savedReply) {
-        const { uuid, author, article, reply, votedUser, content, created, updated, hidden, vote } = <IComment>(
-          savedReply.toObject()
-        );
+        const responseComment = <IComment>savedReply.toObject();
         return {
           success: true,
           result: {
-            uuid,
-            author,
-            article,
-            reply,
-            votedUser,
-            content,
-            created,
-            updated,
-            hidden,
-            vote,
+            ...responseComment,
           },
         };
       }
@@ -188,22 +166,11 @@ Mux.put<IComment>(
             { ...requestData.body },
           );
           if (savedComment) {
-            const { uuid, author, article, reply, votedUser, content, created, updated, hidden, vote } = <IComment>(
-              savedComment.toObject()
-            );
+            const responseComment = <IComment>savedComment.toObject();
             return {
               success: true,
               result: {
-                uuid,
-                article,
-                author,
-                reply,
-                votedUser,
-                content,
-                created,
-                updated,
-                hidden,
-                vote,
+                ...responseComment,
               },
             };
           }
@@ -226,22 +193,11 @@ Mux.delete<IComment>(
       if (user) {
         const deletedComment = await ModelComment.findOneAndDelete({ uuid: commentUuid, author: user._id });
         if (deletedComment) {
-          const { uuid, author, article, reply, votedUser, content, created, updated, hidden, vote } = <IComment>(
-            deletedComment.toObject()
-          );
+          const responseComment = <IComment>deletedComment.toObject();
           return {
             success: true,
             result: {
-              uuid,
-              author,
-              article,
-              reply,
-              votedUser,
-              content,
-              created,
-              updated,
-              hidden,
-              vote,
+              ...responseComment,
             },
           };
         }
