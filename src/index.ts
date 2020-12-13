@@ -1,6 +1,6 @@
 import cluster from 'cluster';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+import config from './helper/config';
 import { Mux } from './framework/mux';
 import logger from './helper/logger';
 import './middleware';
@@ -9,9 +9,6 @@ import './mux/echo';
 import { GetExpressInstance } from './framework/express';
 import FrameworkEvent from './framework/event';
 
-dotenv.config();
-const { MONGO_CONNECT_STRING, SERVICE_HOST, SERVICE_PORT, NODE_ENV } = process.env;
-
 class AppMain {
   /**
    * Connect mongodb
@@ -19,7 +16,7 @@ class AppMain {
    * @memberof AppMain
    */
   public static async connectMongo() {
-    await mongoose.connect(MONGO_CONNECT_STRING as string, {
+    await mongoose.connect(config.mongoConnectString, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -47,7 +44,7 @@ class AppMain {
   private static async startWorker(host: string, port: number) {
     await AppMain.connectMongo();
     const app = GetExpressInstance();
-    Mux.init(NODE_ENV !== 'development');
+    Mux.init(config.nodeEnv !== 'development');
     logger.info('Service process online pid:', process.pid, 'bind:', host, port);
     app.listen(port, host);
   }
@@ -63,9 +60,9 @@ class AppMain {
     if (cluster.isMaster) {
       logger.info('Master process online pid:', process.pid);
       AppMain.startMaster();
-    } else if (SERVICE_HOST && SERVICE_PORT) {
-      logger.info('Service online:', SERVICE_HOST, 'port:', SERVICE_PORT);
-      AppMain.startWorker(SERVICE_HOST, parseInt(SERVICE_PORT, 10));
+    } else if (config.serviceHost && config.servicePort) {
+      logger.info('Service online:', config.serviceHost, 'port:', config.servicePort);
+      AppMain.startWorker(config.serviceHost, parseInt(config.servicePort, 10));
     }
   }
 }
