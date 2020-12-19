@@ -44,6 +44,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
+    "aws-sdk": "^2.809.0",
     "chalk": "^4.1.0",
     "cors": "^2.8.5",
     "denote-ui": "^1.0.16",
@@ -54,6 +55,7 @@
     "moment": "^2.29.1",
     "mongoose": "^5.10.17",
     "no-case": "^3.0.4",
+    "noqueue": "^3.0.11",
     "safe-buffer": "^5.2.1",
     "uuid": "^7.0.3",
     "validator": "^13.1.17",
