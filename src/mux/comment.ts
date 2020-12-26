@@ -3,32 +3,50 @@ import { IResponseList, IResponseRecord } from '../framework/response';
 import { ModelArticle } from '../model/article';
 import { IComment, ModelComment } from '../model/comment';
 import { ModelUser } from '../model/user';
-import { CommentValidator, UuidValidator } from '../validators';
+import { CommentValidator, UuidValidator, ArticleUuidValidator } from '../validators';
 
 // Get all comments at root level in article for a given article's UUID
 Mux.get<[IComment]>(
   '/v1/comment/article/:articleUuid',
-  UuidValidator,
+  ArticleUuidValidator,
   async (requestData: IRequestData): Promise<IResponseList<[IComment]>> => {
     const offset = requestData.body.offset > 1 ? requestData.body.offset - 1 : 0;
     const limit = requestData.body.limit ? requestData.body.limit : 10;
     const order = requestData.body.order ? requestData.body.order : [{ column: 'updated', order: 'asc' }];
+    const { articleUuid } = requestData.params;
+    const foundArticle = await ModelArticle.findOne({ uuid: articleUuid });
     // Get all comments with reply = undefined --> root comment
-    const foundComments = (await ModelComment.find({ uuid: requestData.params.uuid, reply: undefined })
-      .sort({ ...order })
-      .limit(limit)
-      .skip(offset * limit)
-      .lean()) as [IComment];
-    // Count total root comments in this article
-    const totalComments = await ModelComment.find({ uuid: requestData.params.uuid, reply: undefined }).countDocuments();
+    if (foundArticle) {
+      const foundComments = (await ModelComment.find({ article: foundArticle._id, reply: undefined, hidden: false })
+        // .sort({ ...order })
+        .limit(limit)
+        .skip(offset * limit)
+        .lean()) as [IComment];
+      // Count total root comments in this article
+      const totalComments = await ModelComment.find({
+        article: foundArticle._id,
+        reply: undefined,
+        hidden: false,
+      }).countDocuments();
+      return {
+        success: true,
+        result: {
+          total: totalComments,
+          limit,
+          offset,
+          order,
+          records: [foundComments],
+        },
+      };
+    }
     return {
       success: true,
       result: {
-        total: totalComments,
+        total: 0,
         limit,
         offset,
         order,
-        records: [foundComments],
+        records: [],
       },
     };
   },

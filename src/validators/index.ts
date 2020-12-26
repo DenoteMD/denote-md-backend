@@ -42,6 +42,24 @@ export const ArticleValidator = new Validator(
   },
 );
 
+export const ArticleUuidValidator = new Validator({
+  name: 'articleUuid',
+  location: 'params',
+  type: 'string',
+  require: true,
+  validator: (v: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89AB][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v),
+  message: `Invalid UUID value`,
+});
+
+export const CommentUuidValidator = new Validator({
+  name: 'articleUuid',
+  location: 'params',
+  type: 'string',
+  require: true,
+  validator: (v: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89AB][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v),
+  message: `Invalid UUID value`,
+});
+
 export const CommentValidator = new Validator({
   name: 'content',
   location: 'body',
@@ -54,4 +72,7 @@ export const CommentValidator = new Validator({
 export default {
   ArticleValidator,
   UuidValidator,
+  ArticleUuidValidator,
+  CommentUuidValidator,
+  CommentValidator,
 };
