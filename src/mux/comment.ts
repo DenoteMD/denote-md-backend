@@ -1,8 +1,9 @@
-import Mux, { IRequestData } from '../framework/mux';
-import { IResponseList, IOrdering } from '../framework/response';
+import Mux, { IMuxRequest, IRequestData } from '../framework/mux';
+import { IResponseList, IOrdering, IResponseRecord } from '../framework/response';
 import { ModelArticle } from '../model/article';
 import { IComment, ModelComment } from '../model/comment';
-import { ArticleUuidValidator, CommentUuidValidator } from '../validators';
+import { ModelUser } from '../model/user';
+import { ArticleUuidValidator, CommentUuidValidator, CommentValidator } from '../validators';
 
 // Get all comments at root level in article for a given article's UUID
 Mux.get<IComment>(
@@ -77,7 +78,6 @@ Mux.get<IComment>(
         .skip(offset * limit)
         .limit(limit)
         .lean()) as [IComment];
-
       return {
         success: true,
         result: {
@@ -89,6 +89,36 @@ Mux.get<IComment>(
         },
       };
     }
-    throw new Error("Can't find comment for this article");
+    throw new Error("Can't find reply for given comment");
+  },
+);
+
+// Add a comment at root level in an article base on article's uuid
+Mux.post<IComment>(
+  '/v1/comment/article/:uuid',
+  CommentValidator,
+  async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
+    const { uuid } = requestData.params;
+    const imComment = new ModelComment(requestData.body);
+    if (req && req.session) {
+      const article = await ModelArticle.findOne(uuid);
+      const user = await ModelUser.findById(req.session._id);
+      if (user && article) {
+        imComment.author = user._id;
+        imComment.article = article._id;
+        const result = await imComment.save();
+        const savedComment = await ModelComment.findById(result._id).populate(['author', 'artile']);
+        if (savedComment) {
+          const responseComment = <IComment>savedComment.toObject();
+          return {
+            success: true,
+            result: {
+              ...responseComment,
+            },
+          };
+        }
+      }
+    }
+    throw new Error('We are not able to save this comment');
   },
 );
