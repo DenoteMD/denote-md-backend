@@ -101,8 +101,8 @@ Mux.post<IComment>(
     const { uuid } = requestData.params;
     const imComment = new ModelComment(requestData.body);
     if (req && req.session) {
-      const article = await ModelArticle.findOne(uuid);
-      const user = await ModelUser.findById(req.session._id);
+      const article = await ModelArticle.findOne({ uuid });
+      const user = await ModelUser.findById(req.session.user);
       if (user && article) {
         imComment.author = user._id;
         imComment.article = article._id;
@@ -125,24 +125,27 @@ Mux.post<IComment>(
 
 // Edit comment in article
 Mux.put<IComment>(
-  '/v1/comment/:commentUuid',
+  '/v1/comment/:uuid',
   CommentValidator,
   async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
-    const { commentUuid } = requestData.params;
+    const { uuid } = requestData.params;
     if (req && req.session) {
-      const comment = await ModelComment.findOne({ uuid: commentUuid });
-      const user = await ModelUser.findById(req.session._id);
-      if (comment?.author === user?._id) {
-        const savedComment = await ModelComment.findByIdAndUpdate(comment?._id, { ...requestData.body });
+      const comment = await ModelComment.findOne({ uuid });
+      const user = await ModelUser.findById(req.session.user);
 
-        if (savedComment) {
-          const responseComment = <IComment>savedComment.toObject();
-          return {
-            success: true,
-            result: {
-              ...responseComment,
-            },
-          };
+      if (comment && user) {
+        if (comment.author.toString() === user._id.toString()) {
+          const savedComment = await ModelComment.findByIdAndUpdate(comment?._id, { ...requestData.body });
+
+          if (savedComment) {
+            const responseComment = <IComment>savedComment.toObject();
+            return {
+              success: true,
+              result: {
+                ...responseComment,
+              },
+            };
+          }
         }
       }
     }
@@ -158,19 +161,21 @@ Mux.delete<IComment>(
     const { commentUuid } = requestData.params;
     if (req && req.session) {
       const comment = await ModelComment.findOne({ uuid: commentUuid });
-      const user = await ModelUser.findById(req.session._id);
+      const user = await ModelUser.findById(req.session.user);
 
-      if (comment?.author === user?._id) {
-        const deletedComment = await ModelComment.findByIdAndDelete(comment?._id);
+      if (comment && user) {
+        if (comment.author.toString() === user._id.toString()) {
+          const deletedComment = await ModelComment.findByIdAndDelete(comment._id);
 
-        if (deletedComment) {
-          const responseComment = <IComment>deletedComment.toObject();
-          return {
-            success: true,
-            result: {
-              ...responseComment,
-            },
-          };
+          if (deletedComment) {
+            const responseComment = <IComment>deletedComment.toObject();
+            return {
+              success: true,
+              result: {
+                ...responseComment,
+              },
+            };
+          }
         }
       }
     }
