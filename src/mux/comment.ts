@@ -122,3 +122,30 @@ Mux.post<IComment>(
     throw new Error('We are not able to save this comment');
   },
 );
+
+// Edit comment in article
+Mux.put<IComment>(
+  '/v1/comment/:commentUuid',
+  CommentValidator,
+  async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
+    const { commentUuid } = requestData.params;
+    if (req && req.session) {
+      const comment = await ModelComment.findOne({ uuid: commentUuid });
+      const user = await ModelUser.findById(req.session._id);
+      if (comment?.author === user?._id) {
+        const savedComment = await ModelComment.findByIdAndUpdate(comment?._id, { ...requestData.body });
+
+        if (savedComment) {
+          const responseComment = <IComment>savedComment.toObject();
+          return {
+            success: true,
+            result: {
+              ...responseComment,
+            },
+          };
+        }
+      }
+    }
+    throw new Error('We are not able to save comment');
+  },
+);
