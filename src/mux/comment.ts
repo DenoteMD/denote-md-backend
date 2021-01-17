@@ -149,3 +149,32 @@ Mux.put<IComment>(
     throw new Error('We are not able to save comment');
   },
 );
+
+// Delete a comment
+Mux.delete<IComment>(
+  '/v1/comment/:commentUuid',
+  CommentUuidValidator,
+  async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
+    const { commentUuid } = requestData.params;
+    if (req && req.session) {
+      const comment = await ModelComment.findOne({ uuid: commentUuid });
+      const user = await ModelUser.findById(req.session._id);
+
+      if (comment?.author === user?._id) {
+        const deletedComment = await ModelComment.findByIdAndDelete(comment?._id);
+
+        if (deletedComment) {
+          const responseComment = <IComment>deletedComment.toObject();
+          return {
+            success: true,
+            result: {
+              ...responseComment,
+            },
+          };
+        }
+      }
+    }
+
+    throw new Error('We are not able to delete comment');
+  },
+);
