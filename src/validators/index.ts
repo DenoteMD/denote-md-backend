@@ -18,8 +18,6 @@ export const createUuid = (name: string): IField => {
 };
 
 export const UuidValidator = new Validator(createUuid('uuid'));
-export const ArticleUuidValidator = new Validator(createUuid('articleUuid'));
-export const CommentUuidValidator = new Validator(createUuid('commentUuid'));
 
 export const ArticleValidator = new Validator(
   {
@@ -44,7 +42,7 @@ export const ArticleValidator = new Validator(
     name: 'tags',
     location: 'body',
     type: 'array',
-    require: true,
+    require: false,
     validator: (v: string[]) => v.every((e) => typeof e === 'string' && /^[a-zA-Z0-9]{3,32}$/.test(e)),
     message: 'Tag is only non-special characters length between 3-32 characters',
   },
@@ -60,31 +58,52 @@ export const CommentValidator = new Validator(createUuid('uuid'), {
   message: `Body should contain less than ${bodyLength}`,
 });
 
-export const PaginationValidator = new Validator(
-  {
-    name: 'limit',
-    location: 'body',
-    type: 'number',
-    defaultValue: limitPagi,
-    require: true,
-    validator: (v: number) => /^[1-9]+[0-9]*$/.test(v.toString()) && v <= limitPagi,
-    message: 'Invalid limit number',
-  },
-  {
-    name: 'offset',
-    location: 'body',
-    type: 'number',
-    defaultValue: defaultOffset,
-    require: true,
-    validator: (v: number) => /^[1-9]+[0-9]*$/.test(v.toString()),
-    message: 'Invalid offset number',
-  },
+const LimitPagiValidator: IField = {
+  name: 'limit',
+  location: 'body',
+  type: 'number',
+  defaultValue: limitPagi,
+  require: true,
+  validator: (v: number) => /^[1-9]+[0-9]*$/.test(v.toString()) && v <= limitPagi,
+  message: 'Invalid limit number',
+};
+
+const OffsetPagiValidator: IField = {
+  name: 'offset',
+  location: 'body',
+  type: 'number',
+  defaultValue: defaultOffset,
+  require: true,
+  validator: (v: number) => /^[1-9]+[0-9]*$/.test(v.toString()),
+  message: 'Invalid offset number',
+};
+
+const OrderPagiValidator: IField = {
+  name: 'order',
+  location: 'body',
+  type: 'array',
+  defaultValue: [
+    { column: 'updated', order: 'desc' },
+    { column: 'created', order: 'desc' },
+  ],
+  validator: (v: object[]) => v.every((e) => typeof e === 'object'),
+  require: true,
+  message: 'Invalid order type',
+};
+
+export const ArticleUuidValidator = new Validator(
+  createUuid('articleUuid'),
+  LimitPagiValidator,
+  OffsetPagiValidator,
+  OrderPagiValidator,
 );
 
+export const CommentUuidValidator = new Validator(createUuid('commentUuid'));
+
 export default {
-  ArticleValidator,
   UuidValidator,
   ArticleUuidValidator,
   CommentUuidValidator,
+  ArticleValidator,
   CommentValidator,
 };
