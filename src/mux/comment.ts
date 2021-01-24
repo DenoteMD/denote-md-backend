@@ -26,6 +26,9 @@ Mux.get<IComment>(
         .sort(orderObject)
         .skip(offset * limit)
         .limit(limit)
+        .populate('author', '-_id -profile')
+        .populate('article', '-_id -author')
+        .select('-_id -reply -votedUser')
         .lean()) as [IComment];
 
       return {
@@ -63,7 +66,11 @@ Mux.get<IComment>(
         .sort(orderObject)
         .skip(offset * limit)
         .limit(limit)
+        .populate('author', '-_id -profile')
+        .populate('article', '-_id -author')
+        .select('-_id -reply -votedUser')
         .lean()) as [IComment];
+      const totalReply = await ModelComment.countDocuments({ reply: foundComment._id });
       return {
         success: true,
         result: {
@@ -71,7 +78,7 @@ Mux.get<IComment>(
           offset,
           records: replyComments,
           order,
-          total: replyComments.length,
+          total: totalReply,
         },
       };
     }
@@ -90,12 +97,14 @@ Mux.post<IComment>(
     if (req && req.session) {
       const article = await ModelArticle.findOne({ uuid });
       const user = await ModelUser.findById(req.session.user);
-
       if (user && article) {
         imComment.author = user._id;
         imComment.article = article._id;
         const result = await imComment.save();
-        const savedComment = await ModelComment.findById(result._id).populate(['author', 'artile']);
+        const savedComment = await ModelComment.findById(result._id)
+          .select('-_id')
+          .populate('author', '-_id -profile')
+          .populate('article', '-_id -author');
 
         if (savedComment) {
           const responseComment = <IComment>savedComment.toObject();
@@ -122,9 +131,13 @@ Mux.put<IComment>(
     if (req && req.session) {
       const comment = await ModelComment.findOne({ uuid });
       const user = await ModelUser.findById(req.session.user);
+      const { content } = requestData.body;
       if (comment && user) {
         if (comment.author.toString() === user._id.toString()) {
-          const savedComment = await ModelComment.findByIdAndUpdate(comment?._id, { ...requestData.body });
+          const savedComment = await ModelComment.findByIdAndUpdate(comment._id, { content })
+            .select('-_id')
+            .populate('author', '-_id -profile')
+            .populate('article', '-_id -author');
           if (savedComment) {
             const responseComment = <IComment>savedComment.toObject();
             return {
@@ -151,10 +164,12 @@ Mux.delete<IComment>(
     if (req && req.session) {
       const comment = await ModelComment.findOne({ uuid: commentUuid });
       const user = await ModelUser.findById(req.session.user);
-
       if (comment && user) {
         if (comment.author.toString() === user._id.toString()) {
-          const deletedComment = await ModelComment.findByIdAndDelete(comment._id);
+          const deletedComment = await ModelComment.findByIdAndDelete(comment._id)
+            .select('-_id')
+            .populate('author', '-_id -profile')
+            .populate('article', '-_id -author');
           if (deletedComment) {
             const responseComment = <IComment>deletedComment.toObject();
             return {

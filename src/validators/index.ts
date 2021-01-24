@@ -98,7 +98,12 @@ export const ArticleUuidValidator = new Validator(
   OrderPagiValidator,
 );
 
-export const CommentUuidValidator = new Validator(createUuid('commentUuid'));
+export const CommentUuidValidator = new Validator(
+  createUuid('commentUuid'),
+  LimitPagiValidator,
+  OffsetPagiValidator,
+  OrderPagiValidator,
+);
 
 export default {
   UuidValidator,

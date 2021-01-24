@@ -20,6 +20,8 @@ class AppMain {
     await mongoose.connect(config.mongoConnectString, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useFindAndModify: false,
+      useCreateIndex: true,
     });
   }
 
