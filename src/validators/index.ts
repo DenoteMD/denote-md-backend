@@ -17,8 +17,6 @@ export const createUuid = (name: string): IField => {
   };
 };
 
-export const UuidValidator = new Validator(createUuid('uuid'));
-
 export const ArticleValidator = new Validator(
   {
     name: 'title',
@@ -48,7 +46,7 @@ export const ArticleValidator = new Validator(
   },
 );
 
-export const CommentValidator = new Validator(createUuid('uuid'), {
+const CommentObjValidator: IField = {
   name: 'content',
   location: 'body',
   type: 'string',
@@ -56,9 +54,9 @@ export const CommentValidator = new Validator(createUuid('uuid'), {
   validator: (v: string) => v.length < bodyLength,
   postProcess: (v: string) => filterXSS(v),
   message: `Body should contain less than ${bodyLength}`,
-});
+};
 
-const LimitPagiValidator: IField = {
+const LimitPagiObjValidator: IField = {
   name: 'limit',
   location: 'body',
   type: 'number',
@@ -68,7 +66,7 @@ const LimitPagiValidator: IField = {
   message: 'Invalid limit number',
 };
 
-const OffsetPagiValidator: IField = {
+const OffsetPagiObjValidator: IField = {
   name: 'offset',
   location: 'body',
   type: 'number',
@@ -78,7 +76,7 @@ const OffsetPagiValidator: IField = {
   message: 'Invalid offset number',
 };
 
-const OrderPagiValidator: IField = {
+const OrderPagiObjValidator: IField = {
   name: 'order',
   location: 'body',
   type: 'array',
@@ -91,24 +89,39 @@ const OrderPagiValidator: IField = {
   message: 'Invalid order type',
 };
 
-export const ArticleUuidValidator = new Validator(
+export const GetArticleValidator = new Validator(
   createUuid('articleUuid'),
-  LimitPagiValidator,
-  OffsetPagiValidator,
-  OrderPagiValidator,
+  LimitPagiObjValidator,
+  OffsetPagiObjValidator,
+  OrderPagiObjValidator,
 );
 
-export const CommentUuidValidator = new Validator(
+export const GetCommentValidator = new Validator(
   createUuid('commentUuid'),
-  LimitPagiValidator,
-  OffsetPagiValidator,
-  OrderPagiValidator,
+  LimitPagiObjValidator,
+  OffsetPagiObjValidator,
+  OrderPagiObjValidator,
 );
+
+export const CommentValidator = new Validator(createUuid('articleUuid'), CommentObjValidator);
+
+export const ReplyCommentValidator = new Validator(
+  createUuid('commentUuid'),
+  createUuid('articleUuid'),
+  CommentObjValidator,
+);
+
+export const UuidValidator = new Validator(createUuid('uuid'));
+export const CommentUuidValidator = new Validator(createUuid('commentUuid'));
+export const ArticleUuidValidator = new Validator(createUuid('articleUuid'));
 
 export default {
   UuidValidator,
-  ArticleUuidValidator,
   CommentUuidValidator,
+  ArticleUuidValidator,
+  GetArticleValidator,
+  GetCommentValidator,
   ArticleValidator,
   CommentValidator,
+  ReplyCommentValidator,
 };

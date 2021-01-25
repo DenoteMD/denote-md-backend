@@ -3,12 +3,18 @@ import { IResponseList, IOrdering, IResponseRecord } from '../framework/response
 import { ModelArticle } from '../model/article';
 import { IComment, ModelComment } from '../model/comment';
 import { ModelUser } from '../model/user';
-import { ArticleUuidValidator, CommentUuidValidator, CommentValidator } from '../validators';
+import {
+  GetArticleValidator,
+  GetCommentValidator,
+  CommentValidator,
+  ReplyCommentValidator,
+  CommentUuidValidator,
+} from '../validators';
 
 // Get all comments at root level in article for a given article's UUID
 Mux.get<IComment>(
   '/v1/comment/article/:articleUuid',
-  ArticleUuidValidator,
+  GetArticleValidator,
   async (requestData: IRequestData): Promise<IResponseList<IComment>> => {
     const { offset, limit, order } = requestData.body;
     const { articleUuid } = requestData.params;
@@ -49,7 +55,7 @@ Mux.get<IComment>(
 // Get all comments that's reply to a given comment UUID
 Mux.get<IComment>(
   '/v1/comment/comment/:commentUuid',
-  CommentUuidValidator,
+  GetCommentValidator,
   async (requestData: IRequestData): Promise<IResponseList<IComment>> => {
     const { commentUuid } = requestData.params;
     const { offset, limit, order } = requestData.body;
@@ -88,14 +94,14 @@ Mux.get<IComment>(
 
 // Add a comment at root level in an article base on article's uuid
 Mux.post<IComment>(
-  '/v1/comment/article/:uuid',
+  '/v1/comment/article/:articleUuid',
   CommentValidator,
   async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
-    const { uuid } = requestData.params;
+    const { articleUuid } = requestData.params;
 
     const imComment = new ModelComment(requestData.body);
     if (req && req.session) {
-      const article = await ModelArticle.findOne({ uuid });
+      const article = await ModelArticle.findOne({ uuid: articleUuid });
       const user = await ModelUser.findById(req.session.user);
       if (user && article) {
         imComment.author = user._id;
@@ -123,13 +129,13 @@ Mux.post<IComment>(
 
 // Edit comment in article
 Mux.put<IComment>(
-  '/v1/comment/:uuid',
+  '/v1/comment/:articleUuid',
   CommentValidator,
   async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
-    const { uuid } = requestData.params;
+    const { articleUuid } = requestData.params;
 
     if (req && req.session) {
-      const comment = await ModelComment.findOne({ uuid });
+      const comment = await ModelComment.findOne({ uuid: articleUuid });
       const user = await ModelUser.findById(req.session.user);
       const { content } = requestData.body;
       if (comment && user) {
@@ -157,7 +163,7 @@ Mux.put<IComment>(
 // Reply to a comment in an article base on article's uuid
 Mux.post<IComment>(
   '/v1/comment/:commentUuid/article/:articleUuid',
-  CommentValidator,
+  ReplyCommentValidator,
   async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
     const { commentUuid, articleUuid } = requestData.body;
 
