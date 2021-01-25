@@ -154,6 +154,43 @@ Mux.put<IComment>(
   },
 );
 
+// Reply to a comment in an article base on article's uuid
+Mux.post<IComment>(
+  '/v1/comment/:commentUuid/article/:articleUuid',
+  CommentValidator,
+  async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
+    const { commentUuid, articleUuid } = requestData.body;
+
+    if (req && req.session) {
+      const user = await ModelUser.findById(req.session.user);
+      const foundArticle = await ModelArticle.findOne({ uuid: articleUuid });
+      const curComment = await ModelComment.findOne({ uuid: commentUuid });
+      if (user && curComment && foundArticle) {
+        const { content } = requestData.body;
+        const replyComment = new ModelComment(content);
+        replyComment.author = user._id;
+        replyComment.article = foundArticle._id;
+        const result = await replyComment.save();
+        const savedReply = await ModelComment.findById(result._id)
+          .select('-_id')
+          .populate('author', '-_id -profile')
+          .populate('article', '-_id -author');
+        if (savedReply) {
+          const responseComment = <IComment>savedReply.toObject();
+          return {
+            success: true,
+            result: {
+              ...responseComment,
+            },
+          };
+        }
+      }
+    }
+
+    throw new Error('We are not able to save comment');
+  },
+);
+
 // Delete a comment
 Mux.delete<IComment>(
   '/v1/comment/:commentUuid',
