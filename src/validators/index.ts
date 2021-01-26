@@ -6,7 +6,7 @@ const bodyLength = 1048576;
 const limitPagi = 10;
 const defaultOffset = 0;
 
-export const createUuid = (name: string): IField => {
+const createUuid = (name: string): IField => {
   return {
     name,
     location: 'params',

@@ -98,15 +98,17 @@ Mux.post<IComment>(
   CommentValidator,
   async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
     const { articleUuid } = requestData.params;
+    const { content } = requestData.body;
 
-    const imComment = new ModelComment(requestData.body);
     if (req && req.session) {
       const article = await ModelArticle.findOne({ uuid: articleUuid });
       const user = await ModelUser.findById(req.session.user);
       if (user && article) {
+        const imComment = new ModelComment({ content });
         imComment.author = user._id;
         imComment.article = article._id;
         const result = await imComment.save();
+
         const savedComment = await ModelComment.findById(result._id)
           .select('-_id')
           .populate('author', '-_id -profile')
@@ -165,15 +167,16 @@ Mux.post<IComment>(
   '/v1/comment/:commentUuid/article/:articleUuid',
   ReplyCommentValidator,
   async (requestData: IRequestData, req?: IMuxRequest): Promise<IResponseRecord<IComment>> => {
-    const { commentUuid, articleUuid } = requestData.body;
+    const { commentUuid, articleUuid } = requestData.params;
 
     if (req && req.session) {
       const user = await ModelUser.findById(req.session.user);
       const foundArticle = await ModelArticle.findOne({ uuid: articleUuid });
       const curComment = await ModelComment.findOne({ uuid: commentUuid });
+
       if (user && curComment && foundArticle) {
         const { content } = requestData.body;
-        const replyComment = new ModelComment(content);
+        const replyComment = new ModelComment({ content });
         replyComment.author = user._id;
         replyComment.article = foundArticle._id;
         const result = await replyComment.save();
