@@ -34,7 +34,7 @@ export interface IArticle {
 }
 
 export const SchemaArticle = new Schema({
-  uuid: { type: String, default: uuidv4(), unique: true, index: true },
+  uuid: { type: String, default: uuidv4, unique: true, index: true },
   title: String,
   author: { type: Schema.Types.ObjectId, ref: 'User' },
   content: String,

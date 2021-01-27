@@ -29,7 +29,7 @@ export interface ISession {
 }
 
 export const SchemaSession = new Schema({
-  uuid: { type: String, default: uuidv4(), unique: true, index: true },
+  uuid: { type: String, default: uuidv4, unique: true, index: true },
   user: { type: Schema.Types.ObjectId, ref: 'User' },
   device: { type: Schema.Types.ObjectId, ref: 'Device' },
   challengeKey: { type: String, unique: true, index: true },

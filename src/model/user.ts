@@ -34,7 +34,7 @@ export interface IUser {
 export const SchemaUser = new Schema({
   profile: { type: Schema.Types.ObjectId, ref: 'Profile' },
   device: { type: [Schema.Types.ObjectId], ref: 'User' },
-  uuid: { type: String, default: uuidv4(), unique: true, index: true },
+  uuid: { type: String, default: uuidv4, unique: true, index: true },
   alias: { type: String, unique: true, index: true },
   status: String,
   vote: { type: Number, default: 100 },
