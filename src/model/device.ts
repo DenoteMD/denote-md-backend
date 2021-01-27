@@ -21,7 +21,7 @@ export interface IDevice {
 }
 
 export const SchemaDevice = new Schema({
-  uuid: { type: String, default: uuidv4(), unique: true, index: true },
+  uuid: { type: String, default: uuidv4, unique: true, index: true },
   deviceName: String,
   ipAddress: String,
   lastActive: Date,

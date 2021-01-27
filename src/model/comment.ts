@@ -42,7 +42,7 @@ export interface IComment {
 }
 
 export const SchemaComment = new Schema({
-  uuid: { type: String, default: uuidv4(), unique: true, index: true },
+  uuid: { type: String, default: uuidv4, unique: true, index: true },
   author: { type: Schema.Types.ObjectId, ref: 'User' },
   article: { type: Schema.Types.ObjectId, ref: 'Article' },
   reply: { type: Schema.Types.ObjectId, ref: 'Comment' },
