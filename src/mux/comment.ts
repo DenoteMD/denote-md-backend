@@ -18,7 +18,7 @@ Mux.get<IComment>(
   async (requestData: IRequestData): Promise<IResponseList<IComment>> => {
     const { offset, limit, order } = requestData.body;
     const { articleUuid } = requestData.params;
-
+    console.log('CHECKK1123332');
     const foundArticle = await ModelArticle.findOne({ uuid: articleUuid });
     if (foundArticle) {
       const orderObject = order.reduce((curObj: IOrdering, item: IOrdering) => {
