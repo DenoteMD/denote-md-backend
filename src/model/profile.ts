@@ -21,7 +21,7 @@ export interface IProfile {
 }
 
 export const SchemaProfile = new Schema({
-  uuid: { type: String, default: uuidv4(), unique: true, index: true },
+  uuid: { type: String, default: uuidv4, unique: true, index: true },
   firstName: String,
   lastName: String,
   extraData: Map,

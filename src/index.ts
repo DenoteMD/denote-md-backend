@@ -6,6 +6,7 @@ import logger from './helper/logger';
 import './middleware';
 import './mux/article';
 import './mux/echo';
+import './mux/comment';
 import { GetExpressInstance } from './framework/express';
 import FrameworkEvent from './framework/event';
 
@@ -19,6 +20,8 @@ class AppMain {
     await mongoose.connect(config.mongoConnectString, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useFindAndModify: false,
+      useCreateIndex: true,
     });
   }
 
