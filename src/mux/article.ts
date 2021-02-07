@@ -1,7 +1,7 @@
 import express from 'express';
 import Mux, { IRequestData } from '../framework/mux';
 import { IResponseRecord } from '../framework/response';
-import { ArticleValidator, UuidValidator } from '../validators';
+import { ArticleValidator, ArticleUuidValidator } from '../validators';
 import { ModelArticle, IArticle } from '../model/article';
 import { ModelUser } from '../model/user';
 
@@ -28,20 +28,11 @@ Mux.post<IArticle>(
       }
     }
     const result = await imArticle.save();
-    const savedArticle = await ModelArticle.findById(result._id).populate('author');
+    const savedArticle = await ModelArticle.findById(result._id).populate('author', '-_id -profile');
     if (savedArticle) {
-      const { uuid, tags, author, vote, comments, title, content, created, updated } = <IArticle>savedArticle.toObject({
-        transform: (_doc: any, ret: any) => {
-          const keys = Object.keys(ret);
-          for (let i = 0; i < keys.length; i += 1) {
-            const key = keys[i];
-            if (key.indexOf('_') === 0) {
-              // eslint-disable-next-line no-param-reassign
-              delete ret[key];
-            }
-          }
-        },
-      });
+      const { uuid, tags, author, vote, comments, title, content, created, updated } = <IArticle>(
+        savedArticle.toObject()
+      );
       return {
         success: true,
         result: {
@@ -62,23 +53,15 @@ Mux.post<IArticle>(
 );
 
 Mux.get<IArticle>(
-  '/v1/article/:uuid',
-  UuidValidator,
+  '/v1/article/:articleUuid',
+  ArticleUuidValidator,
   async (requestData: IRequestData): Promise<IResponseRecord<IArticle>> => {
-    const foundArticle = await ModelArticle.findOne({ uuid: requestData.params.uuid }).populate('author');
+    const { articleUuid } = requestData.params;
+    const foundArticle = await ModelArticle.findOne({ articleUuid }).populate('author', '-_id -profile');
     if (foundArticle) {
-      const { uuid, tags, author, vote, comments, title, content, created, updated } = <IArticle>foundArticle.toObject({
-        transform: (_doc: any, ret: any) => {
-          const keys = Object.keys(ret);
-          for (let i = 0; i < keys.length; i += 1) {
-            const key = keys[i];
-            if (key.indexOf('_') === 0) {
-              // eslint-disable-next-line no-param-reassign
-              delete ret[key];
-            }
-          }
-        },
-      });
+      const { uuid, tags, author, vote, comments, title, content, created, updated } = <IArticle>(
+        foundArticle.toObject()
+      );
       return {
         success: true,
         result: { uuid, tags, author, vote, comments, title, content, created, updated },
@@ -87,3 +70,5 @@ Mux.get<IArticle>(
     throw new Error('Article not found');
   },
 );
+
+// @todo: missing get list of articles

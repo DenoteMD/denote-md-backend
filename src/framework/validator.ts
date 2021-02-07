@@ -8,11 +8,15 @@ export interface IValidateMethod {
   (v: any): boolean;
 }
 
+export type TLocation = 'body' | 'query' | 'params' | 'any';
+
+export type TType = 'string' | 'number' | 'array' | 'boolean' | 'object';
+
 export interface IField {
-  location: 'body' | 'query' | 'params' | 'any';
+  location: TLocation;
   name: string;
   require?: boolean;
-  type: 'string' | 'number' | 'array' | 'boolean' | 'object';
+  type: TType;
   enums?: any[];
   validator?: IValidateMethod;
   message?: string;
@@ -30,6 +34,19 @@ export interface IValidatedData {
   params: IKeyValue;
 }
 
+function fieldsToMap(fields: IField[]): { [key: string]: IField } {
+  const fieldMap: any = {};
+  for (let i = 0; i < fields.length; i += 1) {
+    const field = fields[i];
+    fieldMap[`${field.location}-${field.name}`] = field;
+  }
+  return fieldMap;
+}
+
+function mapToFields(mapOfFields: { [key: string]: IField }): IField[] {
+  return Object.entries(mapOfFields).map((v: [string, IField]) => v[1]);
+}
+
 export class Validator {
   private fields: IField[];
 
@@ -41,9 +58,18 @@ export class Validator {
     return this.fields;
   }
 
-  public concat(...fields: IField[]): Validator {
-    const cachedFields = [...this.fields, ...fields];
-    return new Validator(...cachedFields);
+  /**
+   * Merge two validator into one, it will create a new instance of validator
+   * All fields of current validator will overwrite target validator's feilds
+   * @param {...Validator} target
+   * @return {Validator}
+   * @memberof Validator
+   */
+  public merge(target: Validator): Validator {
+    const currentMap = fieldsToMap(this.fields);
+    const targetMap = fieldsToMap(target.getFields());
+    const cachedMap = { ...targetMap, ...currentMap };
+    return new Validator(...mapToFields(cachedMap));
   }
 
   private static string(val: any): string {
