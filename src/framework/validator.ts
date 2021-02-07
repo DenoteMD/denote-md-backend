@@ -1,5 +1,4 @@
 import express from 'express';
-import { type } from 'os';
 
 export interface IPostProcessMethod {
   (v: any): any;
