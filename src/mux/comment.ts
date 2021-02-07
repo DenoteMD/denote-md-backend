@@ -1,5 +1,4 @@
-import Mux, { IMuxRequest, IRequestData } from '../framework/mux';
-import { IResponseList, IOrdering, IResponseRecord } from '../framework/response';
+import { Mux, IMuxRequest, IRequestData, IResponseList, IOrdering, IResponseRecord } from '../framework';
 import { ModelArticle } from '../model/article';
 import { IComment, ModelComment } from '../model/comment';
 import { ModelUser } from '../model/user';

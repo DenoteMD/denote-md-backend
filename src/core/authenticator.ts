@@ -6,7 +6,7 @@ import moment from 'moment';
 import { IDocumentSession, ModelSession } from '../model/session';
 import { IDocumentUser, IUser, ModelUser } from '../model/user';
 import logger from '../helper/logger';
-import { IMuxRequest, IMuxResponse } from '../framework/mux';
+import { IMuxRequest, IMuxResponse } from '../framework';
 
 // How many mins for signed proof to be invalid, 5 mins
 const challengeProofTtl = 5;

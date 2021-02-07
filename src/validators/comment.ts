@@ -1,4 +1,4 @@
-import { IField, Validator } from '../framework/validator';
+import { IField, Validator } from '../framework';
 import { PaginationValidator } from './pagination';
 import { BodyLength } from './constant';
 import { CreateUuidField } from './common';

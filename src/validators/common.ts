@@ -1,5 +1,5 @@
 import { validate } from 'uuid';
-import { IField, TLocation } from '../framework/validator';
+import { IField, TLocation } from '../framework';
 
 export const CreateUuidField = (name: string, location: TLocation = 'params'): IField => {
   return {

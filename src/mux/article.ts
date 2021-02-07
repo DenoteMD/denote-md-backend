@@ -1,6 +1,5 @@
 import express from 'express';
-import Mux, { IRequestData } from '../framework/mux';
-import { IResponseRecord } from '../framework/response';
+import { Mux, IRequestData, IResponseRecord } from '../framework';
 import { ArticleValidator, ArticleUuidValidator } from '../validators';
 import { ModelArticle, IArticle } from '../model/article';
 import { ModelUser } from '../model/user';
