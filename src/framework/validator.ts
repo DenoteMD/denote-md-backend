@@ -44,7 +44,7 @@ function fieldsToMap(fields: IField[]): { [key: string]: IField } {
 }
 
 function mapToFields(mapOfFields: { [key: string]: IField }): IField[] {
-  return Object.entries(mapOfFields).map(([k, v]: [string, IField]) => v);
+  return Object.entries(mapOfFields).map((v: [string, IField]) => v[1]);
 }
 
 export class Validator {

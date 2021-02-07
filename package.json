@@ -1,6 +1,6 @@
 {
   "name": "dmd-backend",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "DenoteMD backend",
   "author": "chiro8x@gmail.com",
   "license": "MIT",

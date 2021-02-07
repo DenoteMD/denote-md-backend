@@ -56,10 +56,8 @@ Mux.get<IArticle>(
   '/v1/article/:articleUuid',
   ArticleUuidValidator,
   async (requestData: IRequestData): Promise<IResponseRecord<IArticle>> => {
-    const foundArticle = await ModelArticle.findOne({ uuid: requestData.params.uuid }).populate(
-      'author',
-      '-_id -profile',
-    );
+    const { articleUuid } = requestData.params;
+    const foundArticle = await ModelArticle.findOne({ articleUuid }).populate('author', '-_id -profile');
     if (foundArticle) {
       const { uuid, tags, author, vote, comments, title, content, created, updated } = <IArticle>(
         foundArticle.toObject()

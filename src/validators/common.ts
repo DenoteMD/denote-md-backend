@@ -11,3 +11,5 @@ export const CreateUuidField = (name: string, location: TLocation = 'params'): I
     message: `Invalid UUID value`,
   };
 };
+
+export default CreateUuidField;

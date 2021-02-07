@@ -27,3 +27,5 @@ export const PaginationValidator = new Validator(
     message: 'Invalid order type',
   },
 );
+
+export default PaginationValidator;
