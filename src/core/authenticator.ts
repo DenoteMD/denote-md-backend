@@ -7,6 +7,7 @@ import { IDocumentSession, ModelSession } from '../model/session';
 import { IDocumentUser, IUser, ModelUser } from '../model/user';
 import logger from '../helper/logger';
 import { IMuxRequest, IMuxResponse } from '../framework';
+import { DenoteSession } from './session';
 
 // How many mins for signed proof to be invalid, 5 mins
 const challengeProofTtl = 5;
@@ -87,7 +88,7 @@ export class CoreAuthenticator {
       const challengeKey = CoreAuthenticator.generateChallenge();
       // Create new session with given challenge string
       const imSession = new ModelSession({
-        userId: imUser.id,
+        user: imUser._id,
         challengeKey,
         expiredDate,
       });
@@ -146,12 +147,16 @@ export class CoreAuthenticator {
 
   // eslint-disable-next-line consistent-return
   public static authenticationMiddleWare(req: IMuxRequest, res: IMuxResponse, next: express.NextFunction): void {
+    // We will ignore sign-in endpoint
+    if (/^\/v1\/user\/sign-in/i.test(req.url)) {
+      return next();
+    }
     const denoteUiBase64Signature = req.header('X-Denote-User-Identity');
     if (denoteUiBase64Signature) {
       const signature = Buffer.from(denoteUiBase64Signature, 'base64');
       const { message, signer, nonce } = DenoteUserIdentity.verifySignedProof(signature);
       logger.debug('Message:', message);
-      logger.debug('signer:', signer, 'singed time:', moment.unix(nonce).fromNow());
+      logger.debug('Signer:', signer, 'singed time:', moment.unix(nonce).fromNow());
       // Handle empty request data
       if (message !== 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' && req.body) {
         const dataDigest = crypto.createHash('sha256').update(JSON.stringify(req.body)).digest('hex');
@@ -163,22 +168,23 @@ export class CoreAuthenticator {
       }
       // Get session from database then add to req.session
       CoreAuthenticator.getSessionByKeyId(signer).then(
-        (result: IDocumentSession | null) => {
-          req.session = result;
-          logger.debug('Session info:', result);
-          logger.info('User is valid:', signer, (<IUser>(<any>result?.user)).uuid);
-          next();
+        (result: IDocumentSession | null): void => {
+          if (result) {
+            req.session = new DenoteSession(result);
+            logger.debug('Session info:', result);
+            logger.info('User is valid:', signer, (<IUser>(<any>result.user)).uuid);
+            return next();
+          }
+          CoreAuthenticator.sendError(res, 'Well well well, you were not signed in or session broken');
+          logger.error('Session not found or it could be removed from database');
         },
         (err: Error) => {
-          CoreAuthenticator.sendError(res, 'Might be session was no exist or data mismatch');
+          CoreAuthenticator.sendError(res, 'Might be session was not exist or data mismatch');
           logger.error('Core authentication found an error:', err);
-          next();
         },
       );
     } else {
-      // Missing header or wrong type of header
-      CoreAuthenticator.sendError(res, 'You were not authenticated, you shall not pass');
-      next();
+      CoreAuthenticator.sendError(res, 'You shall not pass, access denied');
     }
   }
 }

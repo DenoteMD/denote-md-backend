@@ -8,7 +8,7 @@ Mux.post<any>(
       success: true,
       result: {
         ...requestData,
-        session: req?.session,
+        session: req?.session?.getSession(),
       },
     };
   },
@@ -22,7 +22,7 @@ Mux.get<any>(
       success: true,
       result: {
         ...requestData,
-        session: req?.session,
+        session: req?.session?.getSession(),
       },
     };
   },

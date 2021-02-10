@@ -1,6 +1,10 @@
 // Load the AWS SDK for Node.js
 import AWS from 'aws-sdk';
+import { v4 as uuid } from 'uuid';
 import { Utilities } from 'noqueue';
+import config from '../helper/config';
+import logger from '../helper/logger';
+import { Singleton } from '../framework';
 
 // Set the region
 AWS.config.update({
@@ -67,6 +71,15 @@ export class SendMail {
     html: string,
     text: string,
   ): Promise<AWS.SESV2.Types.SendEmailResponse> {
+    // This one is for development
+    // For now AWS limit number of email send and receiver address
+    if (config.nodeEnv === 'development') {
+      logger.debug('Email sent > from:', from, 'to:', to);
+      logger.debug('Subject:', subject);
+      logger.debug('Html:', html);
+      logger.debug('Text:', text);
+      return { MessageId: uuid() };
+    }
     return this.sendMailRequest({
       Destination: {
         ToAddresses: [to],
@@ -94,5 +107,7 @@ export class SendMail {
     });
   }
 }
+
+export const AwsMailInstance = Singleton<SendMail>('aws-mail-sender', SendMail, config.awsKeyId, config.awsAccessKey);
 
 export default SendMail;
