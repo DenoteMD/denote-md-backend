@@ -1,12 +1,12 @@
 import express from 'express';
 import { Mux, IRequestData, IResponseRecord } from '../framework';
-import { ArticleValidator, ArticleUuidValidator } from '../validators';
+import { ValidatorArticle, ArticleUuidValidator } from '../validators';
 import { ModelArticle, IArticle } from '../model/article';
 import { ModelUser } from '../model/user';
 
 Mux.post<IArticle>(
   '/v1/article',
-  ArticleValidator,
+  ValidatorArticle,
   async (requestData: IRequestData, req?: express.Request): Promise<IResponseRecord<IArticle>> => {
     // Create new article model based on post data
     const imArticle = new ModelArticle(requestData.body);

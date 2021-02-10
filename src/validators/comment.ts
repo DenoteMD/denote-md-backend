@@ -1,9 +1,9 @@
 import { IField, Validator } from '../framework';
-import { PaginationValidator } from './pagination';
+import { ValidatorPagination } from './pagination';
 import { BodyLength } from './constant';
 import { CreateUuidField } from './common';
 
-const CommentObjectValidator: IField = {
+const ValidatorCommentObject: IField = {
   name: 'content',
   location: 'body',
   type: 'string',
@@ -12,14 +12,14 @@ const CommentObjectValidator: IField = {
   message: `Body should contain less than ${BodyLength}`,
 };
 
-export const GetCommentValidator = new Validator(CreateUuidField('commentUuid')).merge(PaginationValidator);
+export const ValidatorGetComment = new Validator(CreateUuidField('commentUuid')).merge(ValidatorPagination);
 
-export const CommentValidator = new Validator(CreateUuidField('articleUuid'), CommentObjectValidator);
+export const ValidatorComment = new Validator(CreateUuidField('articleUuid'), ValidatorCommentObject);
 
-export const ReplyCommentValidator = new Validator(
+export const ReplyValidatorComment = new Validator(
   CreateUuidField('commentUuid'),
   CreateUuidField('articleUuid'),
-  CommentObjectValidator,
+  ValidatorCommentObject,
 );
 
 export const CommentUuidValidator = new Validator(CreateUuidField('commentUuid'));

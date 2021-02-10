@@ -1,9 +1,9 @@
 import { Validator } from '../framework';
-import { PaginationValidator } from './pagination';
+import { ValidatorPagination } from './pagination';
 import { TitleLength, BodyLength } from './constant';
 import { CreateUuidField } from './common';
 
-export const ArticleValidator = new Validator(
+export const ValidatorArticle = new Validator(
   {
     name: 'title',
     location: 'body',
@@ -30,4 +30,4 @@ export const ArticleValidator = new Validator(
   },
 );
 
-export const GetArticleValidator = new Validator(CreateUuidField('articleUuid')).merge(PaginationValidator);
+export const ValidatorGetArticle = new Validator(CreateUuidField('articleUuid')).merge(ValidatorPagination);
