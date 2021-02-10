@@ -1,7 +1,6 @@
 import { Mux, IMuxRequest, IRequestData, IResponseList, IOrdering, IResponseRecord } from '../framework';
 import { ModelArticle } from '../model/article';
 import { IComment, ModelComment } from '../model/comment';
-import { ModelUser } from '../model/user';
 import {
   ValidatorGetArticle,
   ValidatorGetComment,
@@ -100,7 +99,7 @@ Mux.post<IComment>(
 
     if (req && req.session) {
       const article = await ModelArticle.findOne({ uuid: articleUuid });
-      const user = await ModelUser.findOne({ uuid: req.session.getUser().uuid });
+      const user = req.session.getUser();
       if (user && article) {
         const imComment = new ModelComment({ content });
         imComment.author = user._id;

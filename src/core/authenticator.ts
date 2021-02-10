@@ -148,7 +148,8 @@ export class CoreAuthenticator {
   // eslint-disable-next-line consistent-return
   public static authenticationMiddleWare(req: IMuxRequest, res: IMuxResponse, next: express.NextFunction): void {
     // We will ignore sign-in endpoint
-    if (/^\/v1\/user\/sign-in/i.test(req.url)) {
+    // @todo: Change 255 to constant
+    if (req.url.length < 255 && /^\/v1\/user\/sign-in/i.test(req.url)) {
       return next();
     }
     const denoteUiBase64Signature = req.header('X-Denote-User-Identity');
@@ -163,12 +164,12 @@ export class CoreAuthenticator {
         logger.debug('Digest of data:', dataDigest);
         if (dataDigest !== message) {
           CoreAuthenticator.sendError(res, 'Digest mismatch something when wrong here');
-          return next();
+          return undefined;
         }
       }
       // Get session from database then add to req.session
       CoreAuthenticator.getSessionByKeyId(signer).then(
-        (result: IDocumentSession | null): void => {
+        (result: IDocumentSession | null) => {
           if (result) {
             req.session = new DenoteSession(result);
             logger.debug('Session info:', result);
@@ -177,6 +178,7 @@ export class CoreAuthenticator {
           }
           CoreAuthenticator.sendError(res, 'Well well well, you were not signed in or session broken');
           logger.error('Session not found or it could be removed from database');
+          return undefined;
         },
         (err: Error) => {
           CoreAuthenticator.sendError(res, 'Might be session was not exist or data mismatch');

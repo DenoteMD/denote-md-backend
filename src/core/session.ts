@@ -1,15 +1,6 @@
 import { IDocumentSession } from '../model/session';
 import { IDocumentUser } from '../model/user';
 
-/**
- * Is b a subset of a?
- * @param {any[]} a
- * @param {any[]} b
- */
-function isSubset(a: any[], b: any[]) {
-  return b.every((ib) => a.includes(ib));
-}
-
 export class DenoteSession {
   private sessionData: Map<string, any>;
 
