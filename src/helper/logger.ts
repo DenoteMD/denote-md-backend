@@ -1,3 +1,3 @@
-import LoggerLoader from '../framework/logger';
+import { LoggerLoader } from '../framework';
 
 export default new LoggerLoader('denote-md', 'debug');

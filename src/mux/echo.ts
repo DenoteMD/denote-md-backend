@@ -1,6 +1,4 @@
-import Mux, { IMuxRequest, IRequestData } from '../framework/mux';
-import { IResponseRecord } from '../framework/response';
-import { Validator } from '../framework/validator';
+import { Mux, IMuxRequest, IRequestData, IResponseRecord, Validator } from '../framework';
 
 Mux.post<any>(
   '/v1/echo',
@@ -10,7 +8,7 @@ Mux.post<any>(
       success: true,
       result: {
         ...requestData,
-        session: req?.session,
+        session: req?.session?.getSession(),
       },
     };
   },
@@ -24,7 +22,7 @@ Mux.get<any>(
       success: true,
       result: {
         ...requestData,
-        session: req?.session,
+        session: req?.session?.getSession(),
       },
     };
   },

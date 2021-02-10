@@ -33,7 +33,7 @@ export const SchemaSession = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
   device: { type: Schema.Types.ObjectId, ref: 'Device' },
   challengeKey: { type: String, unique: true, index: true },
-  sessionKeyId: { type: String, unique: true, index: true },
+  sessionKeyId: { type: String, index: true },
   created: { type: Date, default: Date.now },
   data: Map,
   expiredDate: Date,

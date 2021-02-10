@@ -1,7 +1,7 @@
-import { Validator } from '../framework/validator';
+import { Validator } from '../framework';
 import { DefaultPagination } from './constant';
 
-export const PaginationValidator = new Validator(
+export const ValidatorPagination = new Validator(
   {
     name: 'limit',
     location: 'query',
@@ -28,4 +28,4 @@ export const PaginationValidator = new Validator(
   },
 );
 
-export default PaginationValidator;
+export default ValidatorPagination;

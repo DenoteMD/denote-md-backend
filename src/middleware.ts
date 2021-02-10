@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import CoreAuthenticator from './core/authenticator';
 import logger from './helper/logger';
-import Mux from './framework/mux';
+import { Mux } from './framework';
 import config from './helper/config';
 
 // Use JSON parse in all possible request

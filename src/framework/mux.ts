@@ -2,8 +2,8 @@ import express, { RequestHandler } from 'express';
 import { Validator } from './validator';
 import { IResponseCommon } from './response';
 import { GetExpressInstance } from './express';
-import { IDocumentSession } from '../model/session';
 import FrameworkEvent from './event';
+import { DenoteSession } from '../core';
 
 export interface IRequestData {
   body: any;
@@ -11,10 +11,8 @@ export interface IRequestData {
   params: any;
 }
 
-export type TDenoteSession = IDocumentSession | null;
-
 export interface IMuxRequest extends express.Request {
-  session?: TDenoteSession;
+  session?: DenoteSession;
 }
 
 export interface IMuxResponse extends express.Response {}
