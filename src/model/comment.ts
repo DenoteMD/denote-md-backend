@@ -10,8 +10,8 @@ import { v4 as uuidv4 } from 'uuid';
 export interface IDocumentComment extends Document {
   uuid: String;
   author: Schema.Types.ObjectId;
-  article: Schema.Types.ObjectId;
-  reply: Schema.Types.ObjectId;
+  articleId: Schema.Types.ObjectId;
+  replyTo: Schema.Types.ObjectId;
   votedUser: Schema.Types.ObjectId[];
   content: String;
   created: Date;
@@ -28,9 +28,9 @@ export interface IDocumentComment extends Document {
 export interface IComment {
   uuid: string;
   author: Schema.Types.ObjectId;
-  article: Schema.Types.ObjectId;
+  articleId: Schema.Types.ObjectId;
   // If reply isn't set that meant this comment, is in the root of comment section
-  reply?: Schema.Types.ObjectId;
+  replyTo?: Schema.Types.ObjectId;
   // We need to record whom had voted
   votedUser: Schema.Types.ObjectId[];
   content: string;
@@ -44,9 +44,9 @@ export interface IComment {
 export const SchemaComment = new Schema({
   uuid: { type: String, default: uuidv4, unique: true, index: true },
   author: { type: Schema.Types.ObjectId, ref: 'User' },
-  article: { type: Schema.Types.ObjectId, ref: 'Article' },
-  reply: { type: Schema.Types.ObjectId, ref: 'Comment' },
-  votedUser: { type: [Schema.Types.ObjectId], ref: 'User' },
+  articleId: { type: Schema.Types.ObjectId, ref: 'Article' },
+  replyTo: { type: Schema.Types.ObjectId, ref: 'Comment' },
+  votedUser: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   content: String,
   created: { type: Date, default: Date.now },
   updated: { type: Date, default: Date.now },

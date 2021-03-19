@@ -8,21 +8,22 @@ import { v4 as uuidv4 } from 'uuid';
  * @extends {Document}
  */
 export interface IDocumentUser extends Document {
-  profile: Schema.Types.ObjectId;
-  device: Schema.Types.ObjectId[];
   uuid: String;
+  profileId: Schema.Types.ObjectId;
+  deviceId: Schema.Types.ObjectId[];
   alias: String;
+  email: String;
   status: String;
   created: Date;
+  updated: Date;
   active: Boolean;
-  achievement: [String];
-  email: String;
+  lastActive: Date;
 }
 
 export interface IUser {
-  profile: Schema.Types.ObjectId;
-  device: Schema.Types.ObjectId[];
   uuid: string;
+  profileId: Schema.Types.ObjectId;
+  deviceId: Schema.Types.ObjectId[];
   alias: string;
   status: string;
   created: Date;
@@ -32,14 +33,15 @@ export interface IUser {
 }
 
 export const SchemaUser = new Schema({
-  profile: { type: Schema.Types.ObjectId, ref: 'Profile' },
-  device: { type: [Schema.Types.ObjectId], ref: 'User' },
+  profileId: { type: Schema.Types.ObjectId, ref: 'Profile' },
+  deviceId: [{ type: Schema.Types.ObjectId, ref: 'Device' }],
   uuid: { type: String, default: uuidv4, unique: true, index: true },
   alias: { type: String, unique: true, index: true },
   status: String,
-  vote: { type: Number, default: 100 },
   created: { type: Date, default: Date.now },
+  updated: { type: Date, default: Date.now },
   active: { type: Boolean, default: true },
+  lastActive: { type: Date, default: Date.now },
   achievement: [String],
   email: { type: String, unique: true, index: true },
 });

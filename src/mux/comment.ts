@@ -103,7 +103,7 @@ Mux.post<IComment>(
       if (user && article) {
         const imComment = new ModelComment({ content });
         imComment.author = user._id;
-        imComment.article = article._id;
+        imComment.articleId = article._id;
         const result = await imComment.save();
 
         const savedComment = await ModelComment.findById(result._id)
@@ -175,7 +175,7 @@ Mux.post<IComment>(
         const { content } = requestData.body;
         const replyComment = new ModelComment({ content });
         replyComment.author = user._id;
-        replyComment.article = foundArticle._id;
+        replyComment.articleId = foundArticle._id;
         const result = await replyComment.save();
         const savedReply = await ModelComment.findById(result._id)
           .select('-_id')

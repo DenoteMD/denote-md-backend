@@ -29,21 +29,11 @@ Mux.post<IArticle>(
     const result = await imArticle.save();
     const savedArticle = await ModelArticle.findById(result._id).populate('author', '-_id -profile');
     if (savedArticle) {
-      const { uuid, tags, author, vote, comments, title, content, created, updated } = <IArticle>(
-        savedArticle.toObject()
-      );
+      const responseArticle = <IArticle>savedArticle.toObject();
       return {
         success: true,
         result: {
-          uuid,
-          tags,
-          author,
-          vote,
-          comments,
-          title,
-          content,
-          created,
-          updated,
+          ...responseArticle,
         },
       };
     }
@@ -58,12 +48,12 @@ Mux.get<IArticle>(
     const { articleUuid } = requestData.params;
     const foundArticle = await ModelArticle.findOne({ articleUuid }).populate('author', '-_id -profile');
     if (foundArticle) {
-      const { uuid, tags, author, vote, comments, title, content, created, updated } = <IArticle>(
-        foundArticle.toObject()
-      );
+      const responseArticle = <IArticle>foundArticle.toObject();
       return {
         success: true,
-        result: { uuid, tags, author, vote, comments, title, content, created, updated },
+        result: {
+          ...responseArticle,
+        },
       };
     }
     throw new Error('Article not found');

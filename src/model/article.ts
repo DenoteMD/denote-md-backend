@@ -18,6 +18,7 @@ export interface IDocumentArticle extends Document {
   updated: Date;
   hidden: Boolean;
   vote: Number;
+  votedUser: Schema.Types.ObjectId[];
 }
 
 export interface IArticle {
@@ -31,6 +32,7 @@ export interface IArticle {
   hidden?: boolean;
   comments: Schema.Types.ObjectId[];
   vote: number;
+  votedUser: Schema.Types.ObjectId[];
 }
 
 export const SchemaArticle = new Schema({
@@ -43,6 +45,7 @@ export const SchemaArticle = new Schema({
   updated: { type: Date, default: Date.now },
   hidden: Boolean,
   vote: { type: Number, default: 0 },
+  votedUser: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
 });
 

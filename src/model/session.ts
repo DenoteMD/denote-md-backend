@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 export interface IDocumentSession extends Document {
   uuid: String;
   user: Schema.Types.ObjectId;
-  device: Schema.Types.ObjectId;
+  deviceId: Schema.Types.ObjectId;
   challengeKey: String;
   sessionKeyId: String;
   data: Map<string, any>;
@@ -20,7 +20,7 @@ export interface IDocumentSession extends Document {
 export interface ISession {
   uuid: string;
   user: Schema.Types.ObjectId;
-  device: Schema.Types.ObjectId;
+  deviceId: Schema.Types.ObjectId;
   challengeKey: string;
   sessionKeyId: string;
   data: Map<string, any>;
@@ -31,7 +31,7 @@ export interface ISession {
 export const SchemaSession = new Schema({
   uuid: { type: String, default: uuidv4, unique: true, index: true },
   user: { type: Schema.Types.ObjectId, ref: 'User' },
-  device: { type: Schema.Types.ObjectId, ref: 'Device' },
+  deviceId: { type: Schema.Types.ObjectId, ref: 'Device' },
   challengeKey: { type: String, unique: true, index: true },
   sessionKeyId: { type: String, index: true },
   created: { type: Date, default: Date.now },
