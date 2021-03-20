@@ -8,6 +8,7 @@ import { Singleton } from '../framework';
 
 // Set the region
 AWS.config.update({
+  // @todo: move this to configuration and .env
   region: 'ap-southeast-1',
 });
 
