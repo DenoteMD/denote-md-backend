@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export interface IDocumentAsset extends Document {
   uuid: String;
-  user: Schema.Types.ObjectId;
+  author: Schema.Types.ObjectId;
   article: Schema.Types.ObjectId;
   s3link: String;
   type: String;
@@ -21,7 +21,7 @@ export interface IDocumentAsset extends Document {
 
 export interface IAsset {
   uuid: string;
-  user: Schema.Types.ObjectId;
+  author: Schema.Types.ObjectId;
   article: Schema.Types.ObjectId;
   s3link: string;
   type: string;
@@ -32,7 +32,7 @@ export interface IAsset {
 
 export const SchemaAsset = new Schema({
   uuid: { type: String, unique: true, default: uuidv4, index: true },
-  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  author: { type: Schema.Types.ObjectId, ref: 'User' },
   article: { type: Schema.Types.ObjectId, ref: 'Article' },
   s3link: { type: String },
   type: { type: String },
