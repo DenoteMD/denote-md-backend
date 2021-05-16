@@ -2,3 +2,4 @@ node_modules/
 built/
 .env
 src/test*.ts
+.husky/_/husky.sh
