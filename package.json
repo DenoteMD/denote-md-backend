@@ -58,7 +58,7 @@
     "noqueue": "^3.0.11",
     "safe-buffer": "^5.2.1",
     "uuid": "^7.0.3",
-    "validator": "^13.5.2",
+    "validator": "^13.7.0",
     "winston": "^3.3.3",
     "winston-transport": "^4.4.0",
     "xss": "^1.0.8"
