@@ -52,7 +52,7 @@
     "express": "^4.17.1",
     "logform": "^2.2.0",
     "modern-syslog": "^1.2.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "mongoose": "^5.11.15",
     "no-case": "^3.0.4",
     "noqueue": "^3.0.11",
