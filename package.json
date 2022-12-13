@@ -49,7 +49,7 @@
     "denote-request": "^1.0.2",
     "denote-ui": "^1.0.16",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "logform": "^2.2.0",
     "modern-syslog": "^1.2.0",
     "moment": "^2.29.1",
